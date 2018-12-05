@@ -29971,6 +29971,17 @@ readers do not read off random characters that represent icons */
   color: #FFC107;
 }
 
+.wap-at-img .at-img .title i {
+  position: absolute;
+  right: 1.5em;
+  top: .5em;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.wap-at-img .at-img .title i:hover {
+  color: #495057;
+}
+
 .nav-tab {
   padding: 7px 15px;
   text-decoration: none !important;

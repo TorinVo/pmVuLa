@@ -22,10 +22,11 @@
                         </div>
                     </div>
                     <div class="row wap-at-img">
-                        <div v-for="image in images" :key="image.id" class="col-6 col-md-12 col-xl-6 mb-3">
+                        <div v-for="(image, index) in images" :key="index" class="col-6 col-md-12 col-xl-6 mb-3">
                             <div class="at-img" :style="{ backgroundImage: 'url(' + image.name + ')' }" @click="showImage(image.name)">
                                 <div class="title">
                                     <a href="#">##i{{image.id}}</a>
+                                    <i class="fa fa-times" @click.stop="deleteImage(image.id, index)"></i>
                                 </div>
                                 <div></div>
                             </div>
@@ -70,6 +71,28 @@
             },
             showImage(img){
                this.$emit('showImage', img);
+            },
+            deleteImage(id, index) {
+                swal({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+
+                    // Send request to the server
+                    axios.delete('/api/image/' + id).then(() => {
+                        if (result.value) {
+                            swal('Deleted!', 'Your file has been deleted.', 'success');
+                            this.images.splice(index, 1);
+                        }
+                    }).catch(() => {
+                        swal('Failed!', 'There was something wronge.', 'warning');
+                    });
+                });
             }
         },
         created() {

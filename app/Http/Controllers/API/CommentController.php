@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\comment;
+use App\Comment;
 use Carbon\Carbon;
 use App\Events\MessagePosted;
 class CommentController extends Controller

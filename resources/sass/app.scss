@@ -55,6 +55,15 @@
             a{
                 color: #FFC107;
             }
+            i{
+                position: absolute;
+                right: 1.5em;
+                top: .5em;
+                color: rgba(255,255,255,.8);
+                &:hover{
+                    color: #495057;
+                }
+            }
         }
     }
 }

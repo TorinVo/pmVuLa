@@ -85,6 +85,15 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $image = Image::findOrFail($id);
+        $name = $image->id.$image->name;
+        $image->delete();
+
+        $oldPhoto = public_path('img/attach/').$name;
+        if(file_exists($oldPhoto)){
+            @unlink($oldPhoto);
+        }
+
+        return ['message' => 'Image Deleted'];
     }
 }
