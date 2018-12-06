@@ -3,12 +3,12 @@ import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
 let routes = [
-    { path: '/dashboard', component: require('./components/Dashboard.vue') },
-    { path: '/developer', component: require('./components/Developer.vue') },
-    { path: '/profile', component: require('./components/Profile.vue') },
-    { path: '/user', component: require('./components/Users.vue') },
-    { path: '/project', component: require('./components/Projects.vue') },
-    { path: '/ticket', component: require('./components/TicketDashboard.vue') },
+    { path: '/', component: require('./components/Dashboard.vue'), name: 'dashboard' },
+    { path: '/developer', component: require('./components/Developer.vue'), name: 'developer' },
+    { path: '/profile', component: require('./components/Profile.vue'), name: 'profile' },
+    { path: '/users', component: require('./components/Users.vue'), name: 'users' },
+    { path: '/projects', component: require('./components/Projects.vue'), name: 'projects' },
+    { path: '/tickets', component: require('./components/TicketDashboard.vue'), name: 'tickets' },
     { 
         path: '/ticket/:ticket', 
         component: require('./components/TicketPage.vue'), 
@@ -17,7 +17,7 @@ let routes = [
 ];
 
 let router = new VueRouter({
-    linkActiveClass: 'active',
+    // linkExactActiveClass: 'active',
     mode: 'history',
     routes,
     scrollBehavior (to, from, savedPosition) {

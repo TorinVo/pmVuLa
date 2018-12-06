@@ -20,10 +20,6 @@ const toast = swal.mixin({
 window.toast = toast;
 
 import router from './router.js';
-// import VueRouter from 'vue-router';
-// Vue.use(VueRouter)
-
-//import {routes} from './routes';
 //Vue.use(Vuex)
 
 // const store = new Vuex.Store({
@@ -42,22 +38,6 @@ Vue.use(VueProgressBar, {
 
 import Gate from "./Gate";
 Vue.prototype.$gate = new Gate(window.user);
-
-let routes = [
-    { path: '/dashboard', component: require('./components/Dashboard.vue') },
-    { path: '/developer', component: require('./components/Developer.vue') },
-    { path: '/profile', component: require('./components/Profile.vue') },
-    { path: '/user', component: require('./components/Users.vue') },
-    { path: '/project', component: require('./components/Projects.vue') },
-    { path: '/ticket', component: require('./components/TicketDashboard.vue') },
-    { path: '/ticket/:ticket', component: require('./components/TicketPage.vue'), name: 'ticket' },
-];
-
-// let router = new VueRouter({
-//     linkActiveClass: 'active',
-//     mode: 'history',
-//     routes
-// })
 
 Vue.filter('upText', function (value) {
     if (!value) return ''
@@ -112,10 +92,29 @@ Vue.component('example-component', require('./components/ExampleComponent.vue'))
 const app = new Vue({
     el: '#app',
     router,
-    methods: {
-        navChange: function(event){
-            
+    data() {
+        return {
+            navSelect: false
         }
-    }
+    },
+    methods: {
+        navChange: function(){
+            let name = this.$route.name;
+            this.navSelect = name
+        }
+    },
+    created() {
+        this.navChange();
+    },
+    watch: {
+        '$route': 'navChange'
+    },
 });
 
+$(function () {
+    $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass   : 'iradio_square-blue',
+        increaseArea : '20%' // optional
+    })
+})

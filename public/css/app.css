@@ -30000,3 +30000,35 @@ code {
   padding: 2px 4px;
 }
 
+.login-page {
+  background-image: url("/img/system/sigin-background-image.jpg");
+  background-size: cover;
+  height: 100vh !important;
+}
+
+.login-page .login-box .card {
+  border-radius: 0px;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+
+.login-card-body .input-group .input-group-text,
+.register-card-body .input-group .input-group-text {
+  color: #777;
+  background-color: transparent;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+
+.login-logo a,
+.register-logo a {
+  text-decoration: none;
+  font-family: "Source Sans Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+
+.login-logo a:hover,
+.register-logo a:hover {
+  color: #444;
+}
+

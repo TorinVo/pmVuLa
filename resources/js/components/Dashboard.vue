@@ -44,7 +44,7 @@
     export default {
         mounted() {
             this.$nextTick(() =>{
-                console.log($('.router-link-exact-active'));
+                
             });
         }
     }

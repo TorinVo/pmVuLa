@@ -40,9 +40,4 @@ class HomeController extends Controller
        // return auth()->user()->getPermissionsViaRoles();
         return view('home');
     }
-
-    public function get()
-    {
-       return 'get';
-    }
 }

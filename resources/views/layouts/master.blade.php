@@ -73,7 +73,7 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <li class="nav-item">
-                            <router-link @click.native="navChange" to="/dashboard" class="nav-link">
+                            <router-link :to="{ name: 'dashboard' }" class="nav-link" :class="{ 'active': (navSelect === 'dashboard') }">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
                                     Dashboard
@@ -81,7 +81,7 @@
                             </router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link to="/ticket" class="nav-link">
+                            <router-link :to="{ name: 'tickets' }" class="nav-link" :class="{ 'active': (navSelect === 'tickets' || navSelect === 'ticket') }">
                                 <i class="nav-icon fa fa-life-ring"></i>
                                 <p>
                                     Tickets <span class="badge badge-danger right">2</span>
@@ -89,8 +89,8 @@
                             </router-link>
                         </li>
                         @hasanyrole('Admin|Designer')
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
+                    <li class="nav-item has-treeview" :class="{ 'menu-open': (navSelect === 'users' || navSelect === 'projects') }">
+                            <a href="#" class="nav-link" :class="{ active: (navSelect === 'users' || navSelect === 'projects') }">
                                 <i class="nav-icon fas fa-list-alt"></i>
                                 <p>
                                     Management
@@ -99,13 +99,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <router-link to="/user" class="nav-link">
+                                    <router-link :to="{ name: 'users' }" class="nav-link" :class="{ 'active': (navSelect === 'users') }">
                                         <i class="fas fa-users nav-icon"></i>
                                         <p>Users</p>
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/project" active-class="active" class="nav-link">
+                                    <router-link :to="{ name: 'projects' }" active-class="active" class="nav-link" :class="{ 'active': (navSelect === 'projects') }">
                                         <i class="fa fa-th-large nav-icon"></i>
                                         <p>Projects</p>
                                     </router-link>
@@ -115,7 +115,7 @@
                         @endhasanyrole
                         @role('Admin')
                         <li class="nav-item">
-                            <router-link to="/developer" class="nav-link">
+                            <router-link :to="{ name: 'developer' }" class="nav-link" :class="{ 'active': (navSelect === 'developer') }">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     Developer
@@ -124,7 +124,7 @@
                         </li>
                         @endrole
                         <li class="nav-item">
-                            <router-link to="/profile" class="nav-link">
+                            <router-link :to="{ name: 'profile'} " class="nav-link" :class="{ 'active': (navSelect === 'profile') }">
                                 <i class="nav-icon fas fa-user-shield"></i>
                                 <p>
                                     Profile

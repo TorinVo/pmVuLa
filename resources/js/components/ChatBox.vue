@@ -141,10 +141,10 @@
             //     self.loadMoreMessage()
             // }, 15000);
             
-            Echo.private('messages.' + this.$route.params.ticket)
-            .listen('MessagePosted', ({message}) => {
-                Fire.$emit('added_message', message);
-            });
+            // Echo.private('messages.' + this.$route.params.ticket)
+            // .listen('MessagePosted', ({message}) => {
+            //     Fire.$emit('added_message', message);
+            // });
         },
 
         watch: {
