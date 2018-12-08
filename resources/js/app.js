@@ -9,6 +9,8 @@ window.Form = Form;
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
 
+window.getVideoId = require('get-video-id');
+
 import swal from 'sweetalert2';
 window.swal = swal;
 const toast = swal.mixin({
@@ -112,9 +114,11 @@ const app = new Vue({
 });
 
 $(function () {
-    $('input').iCheck({
-        checkboxClass: 'icheckbox_square-blue',
-        radioClass   : 'iradio_square-blue',
-        increaseArea : '20%' // optional
-    })
+    if($('#remember')){
+        $('#remember').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass   : 'iradio_square-blue',
+            increaseArea : '20%' // optional
+        })
+    }
 })

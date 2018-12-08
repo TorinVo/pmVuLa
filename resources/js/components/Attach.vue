@@ -14,9 +14,9 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Video Link (YouTube)">
+                                <input type="text" class="form-control" v-model="videolink" placeholder="Video Link (YouTube)">
                                 <span class="input-group-append">
-                                <button type="button" class="btn btn-info btn-flat">Open</button>
+                                <button type="button" @click="openVideo()" class="btn btn-success">Open</button>
                                 </span>
                             </div>
                         </div>
@@ -45,7 +45,17 @@
                 </div>
             </div>
         </div>
+        <!-- Modal -->
+        <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <iframe width="100%" height="315" :src="viedeoEmbed" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
     </div>
+    
 </template>
 
 <script>
@@ -53,6 +63,8 @@
         data() {
             return {
                 selected: '',
+                videolink: '',
+                viedeoEmbed: '',
                 newImage: 0,
                 images: []
             }
@@ -82,17 +94,26 @@
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
-
-                    // Send request to the server
-                    axios.delete('/api/image/' + id).then(() => {
-                        if (result.value) {
+                    if (result.value) {
+                        axios.delete('/api/image/' + id).then(() => {
                             swal('Deleted!', 'Your file has been deleted.', 'success');
                             this.images.splice(index, 1);
-                        }
-                    }).catch(() => {
-                        swal('Failed!', 'There was something wronge.', 'warning');
-                    });
+                        }).catch(() => {
+                            swal('Failed!', 'There was something wronge.', 'warning');
+                        });
+                    }
                 });
+            },
+            openVideo(){
+                if(!this.videolink || this.videolink.trim() === '') {
+                    return
+                }
+                let pattern = '/%^(?:https?://)?(?:www\.)?(?:youtu\.be/ | youtube\.com(?:/embed/ | /v/ | /watch\?v=))([\w-]{10,12})$%x/';
+                let match = getVideoId(this.videolink);
+                if(match && match.service == 'youtube'){
+                    this.viedeoEmbed = 'https://www.youtube.com/embed/'+match.id;
+                    $('#videoModal').modal('show');
+                }
             }
         },
         created() {
@@ -133,6 +154,10 @@
                     return $(".wap-at-img .active").css({
                         backgroundImage: "url(" + dataURL + ")"
                     }).data({'width':w, 'height':h});
+                });
+
+                $('#videoModal').on('hidden.bs.modal', function (e) {
+                    vm.viedeoEmbed = ''
                 });
             });
             Fire.$on('added_image', (image) => {

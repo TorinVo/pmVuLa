@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResources(['image' => 'API\ImageController']);
 Route::apiResources(['comment' => 'API\CommentController']);
 Route::apiResources(['ticket' => 'API\TicketController']);
+Route::post('ticketactions', 'API\TicketController@updateActions');
 Route::apiResources(['project' => 'API\ProjectController']);
 Route::get('getproject', 'API\ProjectController@getProject');
 Route::apiResources(['user' => 'API\UserController']);

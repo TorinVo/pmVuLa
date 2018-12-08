@@ -20,7 +20,7 @@ class Option extends Model
             "dateto"=> date('m/d/Y'), 
             "datefrom" => date('m/d/Y'), 
             "btnActive" => 0, 
-            "hiddenClose" => false, 
+            "hiddenClose" => 0, 
             "projectSelect" => 0
         ];
         $filter = static::where([

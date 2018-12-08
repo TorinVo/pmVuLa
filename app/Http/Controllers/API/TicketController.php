@@ -93,6 +93,24 @@ class TicketController extends Controller
         return ['message' => 'Updated the ticket info'];
     }
 
+    public function updateActions(Request $request)
+    {
+        $ticket = Post::findOrFail($request->id);
+        switch ($request->type) {
+            case 'reviewed':
+                $ticket->reviewed = 1;
+                break;
+            case 'open':
+                $ticket->status = 'open';
+                break;
+            default:
+                $ticket->status = 'close';
+                break;
+        }
+        $ticket->update();
+        return $ticket;
+    }
+
     /**
      * Remove the specified resource from storage.
      *

@@ -6,14 +6,13 @@
             <div class="card-tools">
                 <div class="btn-group">
                     <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                      <i class="fa fa-cogs"></i> Actions</button>
-                    <div class="dropdown-menu float-right" role="menu" x-placement="bottom-start">
-                      <a href="#" class="dropdown-item">Add new event</a>
-                      <a href="#" class="dropdown-item">Clear events</a>
-                      <div class="dropdown-divider"></div>
-                      <a href="#" class="dropdown-item">View calendar</a>
+                    <i class="fa fa-cogs"></i> Actions</button>
+                    <div class="dropdown-menu" role="menu" x-placement="bottom-end">
+                      <a href="javascript:void(0)" @click="actionsTicket('reviewed', ticket.id)" v-if="ticket.reviewed == 0 && $gate.isAdminOrDesigner()" class="dropdown-item"><i class="tb-icon fas fa-user-check text-info"></i> Mark as Reviewed</a>
+                      <a href="javascript:void(0)" @click="actionsTicket('close', ticket.id)" v-if="ticket.status == 'open'" class="dropdown-item"><i class="tb-icon fas fa-dot-circle"></i> Mark as Closed</a>
+                      <a href="javascript:void(0)" @click="actionsTicket('open', ticket.id)" v-else class="dropdown-item"><i class="tb-icon fas fa-dot-circle text-info"></i> Mark as Open</a>
                     </div>
-                  </div>
+                </div>
             </div>
         </div>
         <!-- /.card-header -->
@@ -32,7 +31,7 @@
             <div class="input-group">
                 <input type="text" name="message" @keydown="typing" v-model="message" placeholder="Comment / description" class="form-control">
                 <span class="input-group-append">
-                    <button type="button" @click="sendMessage" class="btn btn-warning">Add Comment</button>
+                    <button type="button" @click="sendMessage" class="btn btn-success">Add Comment</button>
                 </span>
             </div>
         </div>
@@ -50,6 +49,9 @@
         props: {
             postId:{
                 type: Number
+            },
+            ticket: {
+                type: Object
             }
         },
         data() {
@@ -67,7 +69,9 @@
                     this.sendMessage();
                 }        
             },
-
+            actionsTicket(type, id) {
+                 this.$emit('actionsTicket', type, id);
+            },
             loadMessage() {
                 var vm = this;
                 axios.get('/api/comment/' + this.$route.params.ticket)
@@ -87,7 +91,6 @@
                     params: {'last': this.last}
                 })
                 .then(response => {
-                    console.log(response.data);
                     if(response.data.length > 0){
                         response.data.forEach(function (item, index) {
                            Fire.$emit('added_message', item);
@@ -141,10 +144,10 @@
             //     self.loadMoreMessage()
             // }, 15000);
             
-            // Echo.private('messages.' + this.$route.params.ticket)
-            // .listen('MessagePosted', ({message}) => {
-            //     Fire.$emit('added_message', message);
-            // });
+            Echo.private('messages.' + this.$route.params.ticket)
+            .listen('MessagePosted', ({message}) => {
+                Fire.$emit('added_message', message);
+            });
         },
 
         watch: {

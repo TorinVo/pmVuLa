@@ -43,8 +43,8 @@ class CommentController extends Controller
             }
         }
         
-        $comment = Comment::where(['post_id'=> $postId, 'user_id' => $userId])->latest()->first();
-        if(!empty($comment) && Carbon::parse($comment->created_at) >= $today){
+        $comment = Comment::where(['post_id'=> $postId])->latest()->first();
+        if(!empty($comment) && $comment->user_id == $userId && Carbon::parse($comment->created_at) >= $today){
             $oldBody =  $comment->comments;
             $oldBody .= '<br/>'.$message;
             $comment->update(['comments' => $oldBody]);

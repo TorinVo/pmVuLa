@@ -23,7 +23,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card card-success card-outline">
                             <div class="card-header">
                                 <h3 class="card-title m-0">Filters</h3>
                                 <div class="card-tools">
@@ -37,7 +37,7 @@
                                 <form action="" method="get">
                                     <div class="row row-eq-heigh">
                                         <div class="col-md-6">
-                                            <div class="card mb-2">
+                                            <div class="card mb-2 card-info card-outline">
                                                 <div class="card-header">
                                                     <h6 class="m-0">By Date</h6>
                                                 </div>
@@ -72,7 +72,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <div class="card mb-2">
+                                            <div class="card mb-2 card-info card-outline">
                                                 <div class="card-header">
                                                     <h6 class=" m-0">By Project Type</h6>
                                                 </div>
@@ -85,11 +85,10 @@
                                                                 :key="project.id">{{ project.name }}</option>
                                                         </select>
                                                     </div>
-                                                    <div class="form-check">
-                                                        <input type="checkbox" v-model="form.hiddenClose"
-                                                            class="form-check-input" id="txt_hd_close">
-                                                        <label class="form-check-label" for="exampleCheck1">Hide closed
-                                                            issues</label>
+                                                    <div class="form-group mb-0">
+                                                        <label class="form-check-label mb-1" for="exampleCheck1"><input type="checkbox" v-model="form.hiddenClose"
+                                                            class="form-check-input" id="txt_hd_close" true-value="true" false-value="false">
+                                                        Hide closed issues</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -103,7 +102,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card card-success card-outline">
                             <div class="card-header">
                                 <h3 class="card-title m-0">&nbsp;</h3>
 
@@ -143,7 +142,11 @@
                                                     ##{{ ticket.id }}
                                                  </router-link>
                                             </td>
-                                            <td>{{ ticket.title }}</td>
+                                            <td>
+                                                <router-link :to="{ name: 'ticket', params: { ticket: ticket.id } }">
+                                                    {{ ticket.title }}
+                                                </router-link>
+                                            </td>
                                             <td>{{ ticket.created_at | myDate('MM/DD/YYYY') }}</td>
                                             <td class="center">
                                                 <i class="tb-icon fas fa-user-check" :class="{ 'text-info': ticket.reviewed }"></i>
@@ -152,7 +155,7 @@
                                                 <i class="tb-icon fas fa-comments text-info"></i>
                                             </td>
                                             <td class="center">
-                                                <i class="tb-icon fas fa-dot-circle text-info"></i>
+                                                <i class="tb-icon fas fa-dot-circle" :class="{ 'text-info': ticket.status == 'open' }" :title="ticket.status | upText"></i>
                                             </td>
                                             <td>
                                                 <a href="javascript:void(0)" @click="editTicket(ticket)">
@@ -233,7 +236,7 @@
                 form: new Form({
                     dateto: moment(new Date()).format('MM/DD/YYYY'),
                     datefrom: moment(new Date()).format('MM/DD/YYYY'),
-                    hiddenClose: true,
+                    hiddenClose: 0,
                     projectSelect: 1,
                     btnActive: 0
                 }),
@@ -347,16 +350,15 @@
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
-
                     // Send request to the server
-                    this.form.delete('api/ticket/' + id).then(() => {
-                        if (result.value) {
-                            swal('Deleted!', 'Your file has been deleted.', 'success');
-                            Fire.$emit('AfterCreate');
-                        }
-                    }).catch(() => {
-                        swal('Failed!', 'There was something wronge.', 'warning');
-                    });
+                    if (result.value) {
+                        this.form.delete('api/ticket/' + id).then(() => {
+                                swal('Deleted!', 'Your file has been deleted.', 'success');
+                                Fire.$emit('AfterCreate');
+                        }).catch(() => {
+                            swal('Failed!', 'There was something wronge.', 'warning');
+                        });
+                    }
                 });
             }
         },
@@ -378,7 +380,7 @@
                 let data = {
                     'datefrom': this.form.datefrom,
                     'dateto': this.form.dateto,
-                    'hiddenClose': this.form.hiddenClose,
+                    'hiddenClose':  this.form.hiddenClose,
                     'projectSelect': this.form.projectSelect,
                     'btnActive': this.form.btnActive
                 };
@@ -389,6 +391,7 @@
             getFilterData: function () {
                 $('#reservation').data('daterangepicker').setStartDate(this.form.datefrom);
                 $('#reservation').data('daterangepicker').setEndDate(this.form.dateto);
+                $('#txt_hd_close').iCheck(JSON.parse(this.form.hiddenClose) ? 'check' : 'uncheck');
                 this.loadTickets();
             }
         },
@@ -408,6 +411,14 @@
                         vm.form.btnActive = 0;
                     });
                 }
+
+                $('#txt_hd_close').iCheck({
+                    checkboxClass: 'icheckbox_square-blue',
+                    radioClass   : 'iradio_square-blue',
+                    increaseArea : '20%'
+                }).trigger('ifChanged').on('ifClicked', function(event){
+                   vm.form.hiddenClose = !JSON.parse(vm.form.hiddenClose);
+                });
             })
         }
     };

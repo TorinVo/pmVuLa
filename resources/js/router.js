@@ -9,11 +9,8 @@ let routes = [
     { path: '/users', component: require('./components/Users.vue'), name: 'users' },
     { path: '/projects', component: require('./components/Projects.vue'), name: 'projects' },
     { path: '/tickets', component: require('./components/TicketDashboard.vue'), name: 'tickets' },
-    { 
-        path: '/ticket/:ticket', 
-        component: require('./components/TicketPage.vue'), 
-        name: 'ticket'
-     },
+    { path: '/ticket/:ticket', component: require('./components/TicketPage.vue'), name: 'ticket' },
+    { path: '*', component: require('./components/Page404.vue'), name: 'notfound' },
 ];
 
 let router = new VueRouter({

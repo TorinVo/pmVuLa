@@ -238,14 +238,14 @@
                 }).then((result) => {
 
                     // Send request to the server
-                    this.form.delete('api/user/' + id).then(() => {
-                        if (result.value) {
-                            swal('Deleted!', 'Your file has been deleted.', 'success');
-                            Fire.$emit('AfterCreate');
-                        }
-                    }).catch(() => {
-                        swal('Failed!', 'There was something wronge.', 'warning');
-                    });
+                    if (result.value) {
+                        this.form.delete('api/user/' + id).then(() => {
+                                swal('Deleted!', 'Your file has been deleted.', 'success');
+                                Fire.$emit('AfterCreate');
+                        }).catch(() => {
+                            swal('Failed!', 'There was something wronge.', 'warning');
+                        });
+                    }
                 });
             }
         },

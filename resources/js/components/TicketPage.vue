@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-md-8">
                         <!-- DIRECT CHAT WARNING -->
-                        <chat-box :post-id="ticket.id"></chat-box>
+                        <chat-box @actionsTicket="actionsTicket" :post-id="ticket.id" :ticket="ticket"></chat-box>
                         <!--/.direct-chat -->
                     </div>
                     <div class="col-md-4">
@@ -65,7 +65,9 @@
                     this.ticket = response.data;
                 })
                 .catch(error => {
-                    console.log(error)
+                    if (error.response.status === 404) {
+                        this.$router.push({name: 'notfound'})
+                    }
                 })
             },
             openModal() {
@@ -74,6 +76,22 @@
             showImage(image) {
                 this.$refs.imagemodal.image = image;
                 this.$refs.imagemodal.modalOpen = true;
+            },
+            actionsTicket(type, id){
+                axios.post('/api/ticketactions', {
+                    'id': id,
+                    'type': type
+                })
+                .then(response => {
+                    console.log(response.data);
+                    if(type == 'reviewed') this.ticket.reviewed = response.data.reviewed
+                    else this.ticket.status = response.data.status
+                })
+                .catch(error => {
+                    if (error.response.status === 404) {
+                        this.$router.push({name: 'notfound'})
+                    }
+                });
             }
         },
 
