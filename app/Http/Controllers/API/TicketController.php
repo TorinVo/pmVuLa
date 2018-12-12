@@ -29,14 +29,13 @@ class TicketController extends Controller
      */
     public function index(Request $request)
     {   
-        //dd($request->all());
         $idUser = auth('api')->user()->id;
         $filters = $request->only('datefrom', 'dateto', 'hiddenClose', 'projectSelect', 'projectSelect');
         $this->option->updateTincket($idUser, $filters);
         //\DB::enableQueryLog();
         return Post::with(['project' => function($query) {
             $query->select('id' ,'name');
-        }])->filters($filters)->latest()->paginate(10);
+        }])->select('posts.*', \DB::raw('(SELECT count(cm.id) FROM comments cm WHERE (NOT JSON_CONTAINS(cm.views, \''.$idUser.'\') OR cm.views IS NULL) AND cm.post_id = posts.id) AS comments'))->filters($filters)->latest()->paginate(10);
         //dd(\DB::getQueryLog());
     }
 
@@ -65,7 +64,15 @@ class TicketController extends Controller
      */
     public function show($id)
     {
+        $idUser = auth('api')->user()->id;
+        $comments = Comment::where('post_id', $id)->whereRaw('NOT JSON_CONTAINS(views, \''.$idUser.'\') OR views IS NULL')->get();
+        foreach ($comments as $key => $comment) {
+            $comment->users()->attach([$idUser])->save();
+        }
+        //dd($comments);
         return Post::with(['user' => function($query) {
+            $query->select('name', 'id');
+        }, 'project' => function($query) {
             $query->select('name', 'id');
         }])->findOrFail($id);
     }

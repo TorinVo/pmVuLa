@@ -101,12 +101,12 @@ const app = new Vue({
     },
     methods: {
         navChange: function(){
-            let name = this.$route.name;
+            let name = this.$route.name
             this.navSelect = name
         }
     },
     created() {
-        this.navChange();
+        this.navChange()
     },
     watch: {
         '$route': 'navChange'
@@ -118,7 +118,7 @@ $(function () {
         $('#remember').iCheck({
             checkboxClass: 'icheckbox_square-blue',
             radioClass   : 'iradio_square-blue',
-            increaseArea : '20%' // optional
+            increaseArea : '20%'
         })
     }
 })

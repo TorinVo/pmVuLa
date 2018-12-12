@@ -29954,8 +29954,14 @@ readers do not read off random characters that represent icons */
   margin: 0;
 }
 
-.direct-chat-text a {
+.direct-chat-msg.right a {
+  color: #FFC107;
+  font-weight: 700;
+}
+
+.direct-chat-msg a {
   color: orangered;
+  font-weight: 700;
 }
 
 .wap-at-img {

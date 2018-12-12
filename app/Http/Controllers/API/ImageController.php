@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Image;
+use App\Events\MessageImageCreate;
 
 class ImageController extends Controller
 {
@@ -42,6 +43,9 @@ class ImageController extends Controller
         $image->name = asset(
             'img/attach/' . $image->id . $image->name
         );
+
+        broadcast(new MessageImageCreate($image->toArray()))->toOthers();
+
         return $image;
     }
 
@@ -61,7 +65,6 @@ class ImageController extends Controller
             );
             return $image;
         });
-
         return $collection;
     }
 

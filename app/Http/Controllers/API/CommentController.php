@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Comment;
 use Carbon\Carbon;
 use App\Events\MessagePosted;
+use App\Image;
 class CommentController extends Controller
 {
     public function __construct()
@@ -35,14 +36,27 @@ class CommentController extends Controller
         $message = $request->message;
         $postId = $request->ticket;
         $userId = auth('api')->user()->id;
-        preg_match_all('/##i\d+$|##i\d+\s|##\d+$|##\d+\s/', $message, $output);
-        if(!empty($output[0])){
-            foreach ($output[0] as $key => $value) {
+
+        // preg_match_all('/##i\d+$|##i\d+\s|##\d+$|##\d+\s/', $message, $output);
+        preg_match_all('/##i\d+$|##i\d+\s/', $message, $listImg);
+        if(!empty($listImg[0])){
+            foreach ($listImg[0] as $key => $value) {
+                $temp = explode('##i', trim($value));
+                if(!empty($temp)){
+                    $img = Image::find($temp[1]);
+                    if($img){
+                        $message = str_replace(trim($value), '##vuelinki'.$img->id.'i'.substr($img->name, 1), $message);
+                    }
+                }
+            }
+        }
+        preg_match_all('/##\d+$|##\d+\s/', $message, $listLink);
+        if(!empty($listLink[0])){
+            foreach ($listLink[0] as $key => $value) {
                 $temp = explode('##', trim($value));
                 $message = str_replace(trim($value), '##vuelink'.$temp[1], $message);
             }
         }
-        
         $comment = Comment::where(['post_id'=> $postId])->latest()->first();
         if(!empty($comment) && $comment->user_id == $userId && Carbon::parse($comment->created_at) >= $today){
             $oldBody =  $comment->comments;
@@ -54,8 +68,13 @@ class CommentController extends Controller
                 'post_id' => $postId,
             ]);
         }
-
-        $data = $comment->load('user');
+        if(!empty($request->views))
+            $comment->users()->attach($request->views)->save();
+        $data = $comment->load(['user' => function($query) {
+            $query->select('name', 'id', 'photo');
+        }, 'users' => function($query) {
+            $query->select('name', 'id');
+        }]);
         broadcast(new MessagePosted($data))->toOthers();
 
         return $data;
@@ -79,6 +98,8 @@ class CommentController extends Controller
         }else{
             return  Comment::with(['user' => function($query) {
                 $query->select('name', 'id', 'photo');
+            }, 'users' =>  function($query) {
+                $query->select('id','name');
             }])->where('post_id', $id)->get();
         }
         

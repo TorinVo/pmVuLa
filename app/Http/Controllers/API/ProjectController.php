@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Project;
 use App\Option;
+use App\Post;
+use function GuzzleHttp\json_decode;
 
 class ProjectController extends Controller
 {
@@ -99,21 +101,27 @@ class ProjectController extends Controller
     private function findOrCreateOption(){
         $options = [
             "dateto"=> date('m/d/Y'), 
-            "datefrom" => date('m/d/Y'), 
+            "datefrom" => date('m/d/Y'),
             "btnActive" => 0, 
             "hiddenClose" => false, 
             "projectSelect" => 0
         ];
         $filter = auth('api')->user()->options->where('name', 'tickets')->first();
         if(!empty($filter)){
-           return $options = $filter->options;
+            $options = json_decode($filter->options, true);
         }else{
             $options = Option::create([
                 'name' => 'tickets',
                 'options' => json_encode($options),
                 'user_id' => auth('api')->user()->id,
             ]);
-            return $options->options;
+            $options = json_decode($options->options, true);
         }
+        $oldPost = Post::where('status', 'open')->select('created_at')->oldest()->first();
+        if($oldPost){
+            $options['dateto'] = date('m/d/Y');
+            $options['datefrom'] = $oldPost->created_at->format('m/d/Y');
+        }
+        return json_encode($options);
     }
 }

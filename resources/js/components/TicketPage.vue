@@ -9,11 +9,11 @@
                     <div class="col-sm-3">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
-                                <router-link to="/ticket">
+                                <router-link :to="{ name: 'tickets' }">
                                     Tickets
                                 </router-link>
                             </li>
-                            <li class="breadcrumb-item active">Widgets</li>
+                            <li class="breadcrumb-item active">{{ticket.project.name}}</li>
                         </ol>
                     </div>
                 </div>
@@ -28,13 +28,13 @@
                         <!--/.direct-chat -->
                     </div>
                     <div class="col-md-4">
-                        <ChatAttach @showImage="showImage"></ChatAttach>
+                        <ChatAttach></ChatAttach>
                     </div>
                 </div>
             </div>
         </section>
         <modal-window ref="imagemodal">
-           
+            <img :src="imageView" class="img-fluid">
         </modal-window>
     </div>
 </template>
@@ -53,8 +53,10 @@
         data() {
             return {
                 ticket: {
-                    user: {}
-                }
+                    user: {},
+                    project: {}
+                },
+                imageView: ''
             }
         },
 
@@ -70,33 +72,39 @@
                     }
                 })
             },
-            openModal() {
-                this.$refs.imagemodal.modalOpen = true;
-            },
-            showImage(image) {
-                this.$refs.imagemodal.image = image;
-                this.$refs.imagemodal.modalOpen = true;
-            },
             actionsTicket(type, id){
                 axios.post('/api/ticketactions', {
                     'id': id,
                     'type': type
                 })
                 .then(response => {
-                    console.log(response.data);
                     if(type == 'reviewed') this.ticket.reviewed = response.data.reviewed
                     else this.ticket.status = response.data.status
+                    swal('Updated!', 'Information has been updated.', 'success');
                 })
-                .catch(error => {
-                    if (error.response.status === 404) {
-                        this.$router.push({name: 'notfound'})
-                    }
-                });
+                .catch(error => {});
+            },
+            checkImage(imageSrc, succses, error) {
+                var img = new Image();
+                img.onload = succses; 
+                img.onerror = error;
+                img.src = imageSrc;
             }
         },
 
         created() {
+            let vm = this;
             this.loadTicket();
+            Fire.$on('showImage', (img) => {
+                vm.checkImage(img, function() {
+                    vm.imageView = img;
+                    vm.$refs.imagemodal.modalOpen = true;
+                },
+                function() {
+                    vm.imageView = '/img/attach/0.png';
+                    vm.$refs.imagemodal.modalOpen = true;
+                });
+            });
         },
 
         mounted() {

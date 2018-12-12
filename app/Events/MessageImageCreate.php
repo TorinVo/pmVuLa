@@ -9,9 +9,8 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Comment;
 
-class MessagePosted implements ShouldBroadcast
+class MessageImageCreate implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -20,11 +19,10 @@ class MessagePosted implements ShouldBroadcast
      *
      * @return void
      */
-    public $message;
-
-    public function __construct($message)
+    public $image;
+    public function __construct($image)
     {
-        $this->message = $message;
+        $this->image = $image;
     }
 
     /**
@@ -34,7 +32,7 @@ class MessagePosted implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('messages.' . $this->message->post_id);
-        //return ['chatroom'];
+        return new PrivateChannel('images.' . $this->image['post_id']);
+        //return new PrivateChannel('channel-name');
     }
 }

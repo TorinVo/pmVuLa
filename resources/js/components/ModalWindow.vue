@@ -2,7 +2,7 @@
     <div id="modal" :class="{ show : modalOpen }">
         <button @click="modalOpen = false" class="modal-close">&times;</button>
         <div class="modal-content-img">
-            <img :src="image" class="img-fluid">
+            <slot></slot>
         </div>
     </div>
 </template>
@@ -10,8 +10,7 @@
     export default {
         data() {
             return {
-                modalOpen: false,
-                image: ''
+                modalOpen: false
             }
         },
         methods: {
@@ -23,11 +22,12 @@
         },
         watch: {
             modalOpen() {
-                var className = 'modal-open';
+                var className = ['modal-open', 'v-modal'];
                 if (this.modalOpen) {
-                    document.body.classList.add(className);
+                    document.body.classList.add(...className);
                 } else {
-                    document.body.classList.remove(className);
+                    document.body.classList.remove(...className);
+                    Fire.$emit('vModalClose');
                 }
             }
         },
@@ -40,6 +40,10 @@
     }
 </script>
 <style>
+    .v-modal{
+        height: 100vh !important;
+        overflow: hidden;
+    }
     #modal {
         display: none;
         position: fixed;
@@ -47,7 +51,7 @@
         right: 0;
         bottom: 0;
         left: 0;
-        z-index: 2000;
+        z-index: 1101;
         background-color: rgba(0,0,0,0.85);
     }
 
@@ -61,11 +65,24 @@
         padding-top: 12vh;
         margin: 0 auto;
         position: relative;
+        text-align: center;
     }
 
-    body.modal-open {
-        overflow: hidden;
-        position: fixed;
+    #modal .modal-content-img, #modal #caption, #modal .modal-close {    
+        -webkit-animation-name: zoom;
+        -webkit-animation-duration: 0.6s;
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    @-webkit-keyframes zoom {
+        from {-webkit-transform:scale(0)} 
+        to {-webkit-transform:scale(1)}
+    }
+
+    @keyframes zoom {
+        from {transform:scale(0)} 
+        to {transform:scale(1)}
     }
 
     .modal-close {
@@ -74,7 +91,7 @@
         right: 0;
         top: 0;
         padding: 0px 28px 8px;
-        font-size: 4em;
+        font-size: 3em;
         width: auto;
         height: auto;
         background: transparent;

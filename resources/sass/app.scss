@@ -45,9 +45,14 @@
     }
 }
 
-.direct-chat-text{
+.direct-chat-msg{
+    &.right a{
+        color: #FFC107;
+        font-weight: 700;
+    }
     a{
         color: orangered;
+        font-weight: 700;
     }
 }
 .wap-at-img{

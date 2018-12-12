@@ -9,7 +9,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
-                                <router-link to="/dashboard">
+                                <router-link :to="{ name: 'dashboard' }">
                                     Home
                                 </router-link>
                             </li>
@@ -152,7 +152,7 @@
                                                 <i class="tb-icon fas fa-user-check" :class="{ 'text-info': ticket.reviewed }"></i>
                                             </td>
                                             <td class="center">
-                                                <i class="tb-icon fas fa-comments text-info"></i>
+                                                <i class="tb-icon fas fa-comments" :class="{ 'text-info': ticket.comments > 0  }"></i>
                                             </td>
                                             <td class="center">
                                                 <i class="tb-icon fas fa-dot-circle" :class="{ 'text-info': ticket.status == 'open' }" :title="ticket.status | upText"></i>
@@ -430,14 +430,8 @@
         .tb-icon {
             font-size: 1.2rem;
         }
-
-        ;
-
         .center {
             text-align: center;
         }
     }
-
-    ;
-
 </style>

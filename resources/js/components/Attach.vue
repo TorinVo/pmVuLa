@@ -7,6 +7,9 @@
                 <li class="nav-item"><a class="nav-tab" href="#tab_upload" data-toggle="tab">Upload</a></li>
             </ul>
         </div>
+        <modal-window ref="videomodal">
+
+        </modal-window>
         <!-- /.card-header -->
         <div class="card-body">
             <div class="tab-content">
@@ -25,7 +28,7 @@
                         <div v-for="(image, index) in images" :key="index" class="col-6 col-md-12 col-xl-6 mb-3">
                             <div class="at-img" :style="{ backgroundImage: 'url(' + image.name + ')' }" @click="showImage(image.name)">
                                 <div class="title">
-                                    <a href="#">##i{{image.id}}</a>
+                                    <a href="javascript:void(0)">##i{{image.id}}</a>
                                     <i class="fa fa-times" @click.stop="deleteImage(image.id, index)"></i>
                                 </div>
                                 <div></div>
@@ -45,21 +48,19 @@
                 </div>
             </div>
         </div>
-        <!-- Modal -->
-        <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <iframe width="100%" height="315" :src="viedeoEmbed" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-            </div>
-        </div>
+        <modal-window ref="videoModal">
+            <iframe width="100%" height="75%" :src="viedeoEmbed" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </modal-window>
     </div>
     
 </template>
 
 <script>
+    import ModalWindow from './ModalWindow.vue';
     export default {
+        components: {
+            ModalWindow
+        },
         data() {
             return {
                 selected: '',
@@ -82,7 +83,7 @@
                 })
             },
             showImage(img){
-               this.$emit('showImage', img);
+                Fire.$emit('showImage', img);
             },
             deleteImage(id, index) {
                 swal({
@@ -112,12 +113,15 @@
                 let match = getVideoId(this.videolink);
                 if(match && match.service == 'youtube'){
                     this.viedeoEmbed = 'https://www.youtube.com/embed/'+match.id;
-                    $('#videoModal').modal('show');
+                    this.$refs.videoModal.modalOpen = true;
                 }
             }
         },
         created() {
             this.loadImage()
+            Fire.$on('vModalClose', () => {
+                this.viedeoEmbed = ''
+            });
         },
         watch: {
             '$route': 'loadImage'
@@ -136,9 +140,6 @@
                     img.src= dataURL;
                     var w = img.width;
                     var h = img.height;
-                    // $width.val(w)
-                    // $height.val(h);
-
                     axios.post('/api/image', {
                         post_id: vm.$route.params.ticket,
                         photo: dataURL
@@ -153,16 +154,27 @@
 
                     return $(".wap-at-img .active").css({
                         backgroundImage: "url(" + dataURL + ")"
-                    }).data({'width':w, 'height':h});
-                });
-
-                $('#videoModal').on('hidden.bs.modal', function (e) {
-                    vm.viedeoEmbed = ''
+                    });
                 });
             });
+
             Fire.$on('added_image', (image) => {
                 this.images.push(image)
-                this.newImage++;
+                this.newImage++
+                toast({type: 'success', title: '##i'+image.id+' Successfully'})
+                setTimeout(function(){
+                    $(".wap-at-img .active").css({
+                        backgroundImage: ""
+                    })
+                    vm.selected = false
+                }, 1000)
+            });
+
+            Echo.private('images.' + this.$route.params.ticket)
+            .listen('MessageImageCreate', ({image}) => {
+                this.images.push(image)
+                this.newImage++
+                console.log(image);
             });
         }
     }

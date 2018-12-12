@@ -23,7 +23,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card card-success card-outline">
                             <div class="card-header">
                                 <h3 class="card-title m-0">&nbsp;</h3>
 

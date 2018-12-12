@@ -58,7 +58,8 @@
             return {
                 autoload: null,
                 message: '',
-                comments: []
+                comments: [],
+                activeUsers: []
             }
         },
 
@@ -111,7 +112,8 @@
                 }
                 axios.post('/api/comment', {
                     message: this.message.trim(),
-                    ticket: this.postId
+                    ticket: this.postId,
+                    views: this.activeIdUsers
                 })
                 .then(response => {
                     // this.list_messages.push({
@@ -135,6 +137,9 @@
         computed: {
             last(){
                 return this.comments.length > 0 ? this.comments[Object.keys(this.comments).length-1].id : 0;
+            },
+            activeIdUsers(){
+                return this.activeUsers.length > 0 ? this.activeUsers.map(e => e.id) : '';
             }
         },
         created() {
@@ -143,11 +148,6 @@
             // this.autoload = setInterval(function(){
             //     self.loadMoreMessage()
             // }, 15000);
-            
-            Echo.private('messages.' + this.$route.params.ticket)
-            .listen('MessagePosted', ({message}) => {
-                Fire.$emit('added_message', message);
-            });
         },
 
         watch: {
@@ -155,21 +155,31 @@
         },
 
         mounted() {
+            Echo.join('messages.' + this.$route.params.ticket)
+            .here((users) => {
+                this.activeUsers = users;
+            })
+            .joining((user) => {
+                this.activeUsers.push(user);
+            })
+            .leaving((user) => {
+                this.activeUsers.splice(this.activeUsers.indexOf(user));
+            })
+            .listen('MessagePosted', ({message}) => {
+                Fire.$emit('added_message', message);
+            });
+
             Fire.$on('added_message', (message) => {
                 let obj = this.comments.find(obj => obj.id == message.id)
                 if(obj) obj.comments = message.comments
                 else this.comments.push(message)
                 this.toBottom()
             });
-
-            // Echo.channel('chatroom')
-            // .listen('MessagePosted', (data) => {
-            //     Fire.$emit('added_message', data.message);
-            // });
         },
         beforeDestroy() {
-            clearInterval(this.autoload);
-            this.autoload = null;
+            //clearInterval(this.autoload);
+            //this.autoload = null;
+            Echo.leave('messages.' + this.postId);
         }
     }
 </script>

@@ -20,6 +20,13 @@
 //     return true;
 // });
 
-Broadcast::channel('messages.{id}', function ($message, $id) {
+Broadcast::channel('messages.{id}', function ($user, $id) {
+    return [
+        'name'=> $user->name,
+        'id' => $user->id
+    ];
+});
+
+Broadcast::channel('images.{id}', function ($user, $id) {
     return true;
 });

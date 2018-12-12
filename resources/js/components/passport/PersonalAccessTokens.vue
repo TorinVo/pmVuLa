@@ -7,7 +7,7 @@
 <template>
     <div>
         <div>
-            <div class="card card-default">
+            <div class="card card-success card-outline">
                 <div class="card-header">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span>

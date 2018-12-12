@@ -23,7 +23,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card card-success card-outline">
                             <div class="card-header">
                                 <h3 class="card-title m-0">&nbsp;</h3>
 
@@ -69,7 +69,7 @@
                                                 </a>
                                                 /
                                                 <a href="javascript:void(0)" @click="deleteProject(project.id)">
-                                                    <i class="fa fa-trash red"></i>
+                                                    <i class="fa fa-trash text-danger"></i>
                                                 </a>
                                             </td>
                                         </tr>

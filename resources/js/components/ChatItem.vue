@@ -17,9 +17,9 @@
                 </template>
             </div>
             <!-- /.direct-chat-text -->
-            <!-- <div class="direct-chat-info clearfix">
-                <span class="direct-chat-timestamp float-right">Seen by Alger</span>
-            </div> -->
+            <div class="direct-chat-info clearfix" v-if="userRead">
+                <span class="direct-chat-timestamp float-right">Seen by {{userRead}}</span>
+            </div>
         </div>
         <!-- /.direct-chat-msg -->
 
@@ -39,9 +39,9 @@
                     <span v-html="node" v-else :key="n"></span>
                 </template>
             </div>
-            <!-- <div class="direct-chat-info clearfix">
-                <span class="direct-chat-timestamp">Seen by Alger, Torin</span>
-            </div> -->
+            <div class="direct-chat-info clearfix" v-if="userRead">
+                <span class="direct-chat-timestamp">Seen by {{userRead}}</span>
+            </div>
             <!-- /.direct-chat-text -->
         </div>
         <!-- /.direct-chat-msg -->
@@ -52,11 +52,12 @@
 import router from '../router';
     Vue.component('link-item', {
         props:['to'],
-        template:`<router-link v-if="typeLink.length == 1" :to="'/ticket/'+to">##{{to}}</router-link><a href="javascript:void(0)" @click="openImg($event)" v-else>##{{to}}</a>`,
+        template:`<router-link v-if="typeLink.length == 1" :to="'/ticket/'+to">##{{to}}</router-link><a v-else href="javascript:void(0)" @click="showImage($event)">##i{{typeLink[1]}}</a>`,
         methods:{
-            openImg(){
+            showImage(){
                 if (event) event.preventDefault()
-                alert(this.typeLink[1]);
+                let img = '/img/attach/'+this.typeLink[1]+'.'+this.typeLink[2];
+                Fire.$emit('showImage', img);
             }
         },
         computed: {
@@ -69,7 +70,8 @@ import router from '../router';
     export default {
         props: {
             message: {
-                user: {}
+                user: {},
+                users: {}
             }
         },
         methods: {
@@ -85,6 +87,14 @@ import router from '../router';
             },
             nodes() {
                 return this.message.comments.split(/##vuelink([\w]+)/)
+            },
+            userRead(){
+                let me = this.message.user_id;
+                if(this.message.users)
+                    return this.message.users.filter(function(e){
+                        return me != e.id
+                    }).map(e => e.name).join(", ");
+                else return '';
             }
         },
         mounted() {
