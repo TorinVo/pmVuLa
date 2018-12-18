@@ -125,6 +125,7 @@
                                             <th>Project Type</th>
                                             <th>Issue # </th>
                                             <th>Issue Title</th>
+                                            <th>Priority</th>
                                             <th>Date Posted</th>
                                             <th style="width: 40px">Reviewed</th>
                                             <th style="width: 125px">New Comment</th>
@@ -147,6 +148,9 @@
                                                     {{ ticket.title }}
                                                 </router-link>
                                             </td>
+                                            <td>
+                                                <span class="badge" :class="{ 'badge-success': ticket.priority == 'low', 'badge-primary':ticket.priority == 'medium', 'badge-danger':ticket.priority == 'high' }" style="padding: .5em;min-width: 50px;">{{ticket.priority | upText}}</span>
+                                            </td>
                                             <td>{{ ticket.created_at | myDate('MM/DD/YYYY') }}</td>
                                             <td class="center">
                                                 <i class="tb-icon fas fa-user-check" :class="{ 'text-info': ticket.reviewed }"></i>
@@ -155,7 +159,7 @@
                                                 <i class="tb-icon fas fa-comments" :class="{ 'text-info': ticket.comments > 0  }"></i>
                                             </td>
                                             <td class="center">
-                                                <i class="tb-icon fas fa-dot-circle" :class="{ 'text-info': ticket.status == 'open' }" :title="ticket.status | upText"></i>
+                                                <span class="badge" :class="{ 'badge-primary':ticket.status == 'open', 'badge-danger':ticket.status == 'close' }" style="padding: .5em;min-width: 40px;">{{ticket.status | upText}}</span>
                                             </td>
                                             <td>
                                                 <a href="javascript:void(0)" @click="editTicket(ticket)">
@@ -199,7 +203,16 @@
                                     :class="{ 'is-invalid': frmData.errors.has('title') }">
                                 <has-error :form="frmData" field="title"></has-error>
                             </div>
-
+                            <div class="form-group">
+                                <label for="priority">Priority</label>
+                                <select class="form-control form-control-sm" name="priority" v-model="frmData.priority"
+                                    :class="{ 'is-invalid': frmData.errors.has('priority') }">
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                                <has-error :form="frmData" field="project_id"></has-error>
+                            </div>
                             <div class="form-group">
                                 <label for="project_id">Project</label>
                                 <select class="form-control form-control-sm" name="project_id" v-model="frmData.project_id"
@@ -243,7 +256,8 @@
                 frmData: new Form({
                     id: '',
                     title: '',
-                    project_id: ''
+                    project_id: '',
+                    priority: 'low'
                 })
             }
         },
@@ -424,14 +438,3 @@
     };
 
 </script>
-
-<style lang="scss" scoped>
-    .table-ticket {
-        .tb-icon {
-            font-size: 1.2rem;
-        }
-        .center {
-            text-align: center;
-        }
-    }
-</style>

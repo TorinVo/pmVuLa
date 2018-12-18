@@ -11,6 +11,11 @@ class Project extends Model
     ];
 
     protected $casts = [
-        'status' => 'boolean'
+        //'status' => 'boolean'
     ];
+
+    public function posts()
+    {
+        return $this->hasMany('App\Post');
+    }
 }

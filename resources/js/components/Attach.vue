@@ -2,7 +2,7 @@
     <div class="card card-success card-outline">
         <div class="card-header d-flex p-0">
             <h3 class="card-title p-2 mb-0">Attach</h3>
-            <ul class="nav nav-pills ml-auto p-2" style="padding-right: 0px !important;">
+            <ul class="nav nav-pills ml-auto" style="padding-right: 0px !important;">
                 <li class="nav-item" @click="newImage = 0"><a class="nav-tab active" href="#tab_list" data-toggle="tab">List <span v-if="newImage > 0" class="right badge badge-danger">New {{newImage}}</span></a></li>
                 <li class="nav-item"><a class="nav-tab" href="#tab_upload" data-toggle="tab">Upload</a></li>
             </ul>
@@ -17,7 +17,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" v-model="videolink" placeholder="Video Link (YouTube)">
+                                <input type="text" class="form-control" @keydown="typing" v-model="videolink" placeholder="Video Link (YouTube)">
                                 <span class="input-group-append">
                                 <button type="button" @click="openVideo()" class="btn btn-success">Open</button>
                                 </span>
@@ -104,6 +104,12 @@
                         });
                     }
                 });
+            },
+            typing(e) {
+                if(e.keyCode === 13 && !e.shiftKey) {
+                    e.preventDefault();
+                    this.openVideo();
+                }        
             },
             openVideo(){
                 if(!this.videolink || this.videolink.trim() === '') {

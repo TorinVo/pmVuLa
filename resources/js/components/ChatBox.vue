@@ -3,7 +3,7 @@
         <div class="card-header d-flex p-0">
             <h3 class="card-title p-2 mb-0">Comments</h3>
 
-            <div class="card-tools">
+            <div class="card-tools" style="top: .4rem;">
                 <div class="btn-group">
                     <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                     <i class="fa fa-cogs"></i> Actions</button>

@@ -18,9 +18,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResources(['image' => 'API\ImageController']);
+Route::apiResources(['message' => 'API\MesageController']);
 Route::apiResources(['comment' => 'API\CommentController']);
 Route::apiResources(['ticket' => 'API\TicketController']);
 Route::post('ticketactions', 'API\TicketController@updateActions');
+Route::get('ticketopen', 'API\TicketController@getOpenTicket');
+Route::get('myticket', 'API\TicketController@getMyTicket');
 Route::apiResources(['project' => 'API\ProjectController']);
 Route::get('getproject', 'API\ProjectController@getProject');
 Route::apiResources(['user' => 'API\UserController']);

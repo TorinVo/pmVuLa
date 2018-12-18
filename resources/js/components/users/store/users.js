@@ -3,12 +3,12 @@ import { apiFetchUser } from '../api/users'
 const USER_FETCH = 'user_fetch'
 
 const state = {
-    user: []
+    users: {}
 }
 
 const mutations = {
-    [USER_FETCH](state, user) {
-        return state.user = user
+    [USER_FETCH](state, users) {
+        return state.users = users
     },
 }
 

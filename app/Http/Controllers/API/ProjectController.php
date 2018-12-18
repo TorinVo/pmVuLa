@@ -27,9 +27,39 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     { 
-        return Project::latest()->paginate(10);
+        if($request->type){
+            $projects = Project::with(['posts' => function($query) {
+                $query->groupBy('project_id');
+                $query->selectRaw('project_id, count(IF(status=\'open\', 1, null)) as open, count(IF(status=\'close\', 1, null)) as close');
+            }])->latest()->get();
+        }else{
+            $projects = Project::with(['posts' => function($query) {
+                $query->groupBy('project_id');
+                $query->selectRaw('project_id, count(IF(status=\'open\', 1, null)) as open, count(IF(status=\'close\', 1, null)) as close');
+            }])->latest()->paginate(10);
+        }
+
+        $projects->transform(function($project) {
+            $project->percent = 100;
+            $project->close = 0;
+            $project->open = 0;
+            if(!$project->posts->isEmpty()){
+                $open = $project->posts[0]['open'];
+                $close = $project->posts[0]['close'];
+                $total = $open + $close;
+                $percent = 100 / $total;
+                $current = round(($close * $percent), 2);
+                $project->percent = $current;
+                $project->close = $close;
+                $project->open = $open;
+            }
+            unset($project->posts);
+            return $project;
+        });
+
+        return $projects;
     }
 
     /**

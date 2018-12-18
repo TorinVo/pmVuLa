@@ -8,7 +8,11 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"> <router-link to="/dashboard">Home</router-link></li>
+                            <li class="breadcrumb-item">
+                                <router-link :to="{ name: 'dashboard' }">
+                                    Home
+                                </router-link>
+                            </li>
                             <li class="breadcrumb-item active">User Profile</li>
                         </ol>
                     </div>
@@ -43,9 +47,11 @@
                     <!-- /.col -->
                     <div class="col-md-9">
                         <div class="card card-primary card-outline">
-                            <div class="card-header p-2">
+                            <div class="card-header p-0">
                                 <ul class="nav nav-pills">
-                                    <li class="nav-item"><a class="nav-link active" href="#settings" data-toggle="tab">Account Settings</a></li>
+                                    <li class="nav-item">
+                                        <a class="nav-tab active" href="#settings" data-toggle="tab">Account Settings</a>
+                                    </li>
                                 </ul>
                             </div><!-- /.card-header -->
                             <div class="card-body">

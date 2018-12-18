@@ -9,7 +9,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
-                                <router-link to="/dashboard">
+                                <router-link :to="{ name: 'dashboard' }">
                                     Home
                                 </router-link>
                             </li>
@@ -57,11 +57,11 @@
                                             <td>{{ project.created_at | myDate }}</td>
                                             <td>
                                                 <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
+                                                    <div class="progress-bar" role="progressbar" :style="{width: project.percent+'%'}" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">{{project.percent}}%</div>
                                                 </div>
                                             </td>
-                                            <td>
-                                                {{ project.status | upText }}
+                                            <td class="center">
+                                                <span class="badge" :class="{ 'badge-primary':project.status == 'open', 'badge-danger':project.status == 'close' }" style="padding: .5em;min-width: 40px;">{{project.status | upText}}</span>
                                             </td>
                                             <td>
                                                 <a href="javascript:void(0)" @click="editProject(project)">
@@ -113,6 +113,16 @@
                                     <has-error :form="form" field="url"></has-error>
                                 </div>
 
+                                <div class="form-group" v-if="editmode">
+                                    <label for="status">Status</label>
+                                    <select name="status" v-model="form.status" id="status" class="form-control form-control-sm"
+                                        :class="{ 'is-invalid': form.errors.has('status') }">
+                                        <option value="open">Open</option>
+                                        <option value="close">Close</option>
+                                    </select>
+                                    <has-error :form="form" field="status"></has-error>
+                                </div>
+
                                 <div class="form-group">
                                     <label for="describe">Describe</label>
                                     <textarea v-model="form.describe" type="describe" name="describe" id="describe" class="form-control form-control-sm"
@@ -136,10 +146,16 @@
 
 <script>
     export default {
+        beforeMount() {
+            if (this.$gate.isAdminOrDesigner()) {
+                this.$store.dispatch('actionProjectFetch')
+            }
+        },
         data() {
             return{
                 editmode: false,
-                projects: {},
+                page: '',
+                //projects: {},
                 form: new Form({
                     id: '',
                     name: '',
@@ -152,16 +168,19 @@
 
         methods: {
             getResults(page = 1) {
-                this.$Progress.start();
-                axios.get('api/project?page=' + page)
-                .then(response => {
-                    this.projects = response.data;
-                    this.$Progress.finish();
-                })
-                .catch(() => {
-                    this.$Progress.fail();
-                });
+                this.page = page;
+                this.$store.dispatch('actionProjectFetch', this.page)
+                // this.$Progress.start();
+                // axios.get('api/project?page=' + page)
+                // .then(response => {
+                //     this.projects = response.data;
+                //     this.$Progress.finish();
+                // })
+                // .catch(() => {
+                //     this.$Progress.fail();
+                // });
             },
+
             loadProjects() {
                 if (this.$gate.isAdminOrDesigner()) {
                     this.$Progress.start();
@@ -171,6 +190,7 @@
                     this.$Progress.finish();
                 }
             },
+
             newProject() {
                 this.editmode = false;
                 this.form.reset();
@@ -243,14 +263,18 @@
         },
 
         created() {
-            this.loadProjects();
+            //this.loadProjects();
             Fire.$on('AfterCreate', () => {
-                this.loadProjects();
+                //this.loadProjects();
+                this.$store.dispatch('actionProjectFetch')
             });
         },
-
+        computed: {
+            projects() {
+                return this.$store.state.storeProject.projects
+            },
+        },
         mounted() {
-            console.log('Component mounted.')
         }
     }
 

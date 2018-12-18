@@ -1,5 +1,9 @@
 export function apiFetchUser() {
-    return axios.get('api/profile/roles')
-        .then(response => response)
-        .catch(error => error)
+    return axios.get('/api/user', {
+        params: {
+            type: 'all'
+        }
+    })
+    .then(response => response)
+    .catch(error => error)
 }

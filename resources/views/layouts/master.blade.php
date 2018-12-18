@@ -84,7 +84,7 @@
                             <router-link :to="{ name: 'tickets' }" class="nav-link" :class="{ 'active': (navSelect === 'tickets' || navSelect === 'ticket') }">
                                 <i class="nav-icon fa fa-life-ring"></i>
                                 <p>
-                                    Tickets <span class="badge badge-danger right">2</span>
+                                    Tickets <span class="badge badge-danger right">@{{ticketOpen}}</span>
                                 </p>
                             </router-link>
                         </li>
@@ -154,6 +154,17 @@
         <div class="content-wrapper">
             <router-view></router-view>
             <vue-progress-bar></vue-progress-bar>
+            <div class="floating-chat">
+                <i class="fa fa-comments" style="color: white;" aria-hidden="true"></i>
+                <div class="chat">
+                    <va-direct-chat
+                    theme="vue"
+                    title="Direct Chat"
+                    :badgeCount="30"
+                    placeholder="Type Message ..."
+                    ></va-direct-chat>
+                </div>
+            </div>
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">

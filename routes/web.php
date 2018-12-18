@@ -17,6 +17,4 @@ Auth::routes(['verify' => true]);
 
 Route::get('/', 'HomeController@index')->name('home')->middleware('verified');
 
-Route::get('/ticket/{ticket}', 'API\TicketController@showWeb');
-
 Route::get('{path}',"HomeController@index")->where( 'path', '([A-z\d-\/_.]+)?' )->middleware('verified');

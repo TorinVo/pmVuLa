@@ -7,6 +7,7 @@ use App\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Message;
 
 class UserController extends Controller
 {
@@ -26,9 +27,31 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return User::latest()->paginate(10);
+        if($request->type){
+            $idUser = auth('api')->user()->id;
+            $contacts = User::where('id', '!=', $idUser)->get();
+            $unreadIds = Message::select(\DB::raw('`from` as sender_id, count(`from`) as messages_count'))
+                ->where('to', $idUser)
+                ->where('read', false)
+                ->groupBy('from')
+                ->get();
+            $contacts = $contacts->map(function($contact) use ($unreadIds) {
+                $contactUnread = $unreadIds->where('sender_id', $contact->id)->first();
+                $contact->unread = $contactUnread ? $contactUnread->messages_count : 0;
+                $photo = $contact->photo;
+                if(empty($photo))
+                    $photo = 'avatar.png';
+                $contact->photo = asset(
+                    'img/profile/' . $photo
+                );
+                return $contact;
+            });
+            return $contacts;
+        }
+        else
+            return User::latest()->paginate(10);
     }
 
     /**

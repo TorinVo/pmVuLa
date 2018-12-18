@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Post;
 use App\Comment;
+use App\Events\MessageNotification;
 
 class TicketController extends Controller
 {
@@ -53,6 +54,7 @@ class TicketController extends Controller
         ]);
         $user_id = auth('api')->user()->id;
         $request->merge(['user_id' => $user_id]);
+        broadcast(new MessageNotification(['type'=> 'ticketOpen', 'message'=> 'open']));
         return Post::create($request->all());
     }
 
@@ -100,6 +102,15 @@ class TicketController extends Controller
         return ['message' => 'Updated the ticket info'];
     }
 
+    public function getOpenTicket(){
+        return Post::where('status', 'open')->count();
+    }
+
+    public function getMyTicket(){
+        $idUser = auth('api')->user()->id;
+        return Post::where('user_id', $idUser)->count();
+    }
+
     public function updateActions(Request $request)
     {
         $ticket = Post::findOrFail($request->id);
@@ -109,9 +120,11 @@ class TicketController extends Controller
                 break;
             case 'open':
                 $ticket->status = 'open';
+                broadcast(new MessageNotification(['type'=> 'ticketOpen', 'message'=> 'open']));
                 break;
             default:
                 $ticket->status = 'close';
+                broadcast(new MessageNotification(['type'=> 'ticketOpen', 'message'=> 'close']));
                 break;
         }
         $ticket->update();
@@ -128,7 +141,7 @@ class TicketController extends Controller
     {
         $post = Post::findOrFail($id);
         $post->delete();
-
+        broadcast(new MessageNotification(['type'=> 'ticketOpen', 'message'=> 'close']));
         return ['message' => 'Ticket Deleted'];
     }
 }
