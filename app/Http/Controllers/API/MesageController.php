@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Message;
+use App\Events\NewMessage;
 
 class MesageController extends Controller
 {
@@ -26,7 +27,26 @@ class MesageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $message = Message::create([
+            'from' => auth('api')->user()->id,
+            'to' => $request->contact_id,
+            'text' => $request->text
+        ]);
+
+        $message->load(['fromContact' => function($query) {
+            $query->select('id' ,'name', 'photo');
+        }]);
+        
+        $isMine = ($message->from == auth('api')->user()->id) ? true : false;
+        $message->name = $message->fromContact->name;
+        $message->photo = $message->fromContact->photo;
+        $message->photo = asset('img/profile/' . $message->photo);
+        $message->isMine = $isMine;
+        unset($message->fromContact);
+
+        broadcast(new NewMessage($message->toArray()));
+
+        return $message;
     }
 
     /**
@@ -47,7 +67,7 @@ class MesageController extends Controller
         })->orWhere(function($q) use ($id, $idUser) {
             $q->where('from', $id);
             $q->where('to',  $idUser);
-        })->latest()->get();
+        })->get();
         $messages->transform(function($message) use ($idUser) {
             $isMine =  ($message->from == $idUser) ? true : false;
             $message->name_to = $message->fromContact->name;

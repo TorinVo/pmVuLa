@@ -30,3 +30,7 @@ Broadcast::channel('messages.{id}', function ($user, $id) {
 Broadcast::channel('images.{id}', function ($user, $id) {
     return true;
 });
+
+Broadcast::channel('chats.{id}', function ($user, $id) {
+    return $user->id === (int) $id;
+});

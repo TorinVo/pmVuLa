@@ -154,17 +154,12 @@
         <div class="content-wrapper">
             <router-view></router-view>
             <vue-progress-bar></vue-progress-bar>
-            <div class="floating-chat">
-                <i class="fa fa-comments" style="color: white;" aria-hidden="true"></i>
-                <div class="chat">
-                    <va-direct-chat
-                    theme="vue"
-                    title="Direct Chat"
-                    :badgeCount="30"
-                    placeholder="Type Message ..."
-                    ></va-direct-chat>
-                </div>
-            </div>
+            <va-direct-chat
+            theme="vue"
+            title="Direct Chat"
+            :badgeCount="30"
+            placeholder="Type Message ..."
+            ></va-direct-chat>
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">

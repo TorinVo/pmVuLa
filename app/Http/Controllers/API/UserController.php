@@ -20,7 +20,7 @@ class UserController extends Controller
     {
         $this->middleware('auth:api');
         //$this->middleware('role:Admin|Designer', ['only' => ['index']]);
-        $this->middleware('role:Admin|Designer', ['except' => ['profile', 'updateProfile']]);
+        $this->middleware('role:Admin|Designer', ['except' => ['profile', 'updateProfile', 'index']]);
     }
     /**
      * Display a listing of the resource.
