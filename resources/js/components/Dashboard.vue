@@ -17,7 +17,7 @@
                             <div class="card-header">
                                 <h3 class="card-title m-0">Projects Progress</h3> 
                             </div>
-                            <div class="card-body">
+                            <div class="card-body v-scroll" style="max-height: 300px;overflow-y: auto;">
                                 <ul class="projects-progress">
                                     <li v-for="project in projects" :key="project.id">
                                         <h5>{{ project.name }}</h5>

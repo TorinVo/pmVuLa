@@ -18,7 +18,7 @@
         <!-- /.card-header -->
         <div class="card-body">
             <!-- Conversations are loaded here -->
-            <div class="direct-chat-messages" ref="message" id="wap-message" style="height:350px">
+            <div class="direct-chat-messages v-scroll" ref="message" id="wap-message" style="height:350px">
                 <ChatItem  v-for="comment in comments" 
                     :key="comment.id" 
                     :message="comment">

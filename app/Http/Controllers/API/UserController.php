@@ -7,7 +7,9 @@ use App\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use App\Message;
+use App\Notifications\AccountInvitation;
 
 class UserController extends Controller
 {
@@ -68,14 +70,25 @@ class UserController extends Controller
             'password' => 'required|string|min:6'
         ]);
 
-        return User::create([
+        $user = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
             'type' => $request['type'],
             'bio' => $request['bio'],
             'password' => Hash::make($request['password']),
+            'email_verified_at' => date('Y-m-d H:i:s')
         ])->assignRole($request['type']);
+
+        $response = $this->broker()->createToken($user);
         
+        $user->notify(new AccountInvitation($response));
+        
+        return $user;
+    }
+
+    public function broker()
+    {
+        return Password::broker();
     }
 
     public function profile($type=""){

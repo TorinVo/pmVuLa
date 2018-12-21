@@ -414,3 +414,10 @@ code{
 .direct-chat-vue .left > .direct-chat-text:after, .direct-chat-vue .left > .direct-chat-text:before {
     border-right-color: rgb(25, 68, 88);
 }
+
+.no-messager{
+    background-image: url("/img/system/rsz_no_message.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

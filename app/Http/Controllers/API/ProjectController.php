@@ -19,7 +19,7 @@ class ProjectController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->middleware('role:Admin|Designer', ['except' => ['getProject']]);
+        $this->middleware('role:Admin|Designer', ['except' => ['getProject', 'index']]);
     }
 
     /**

@@ -30450,6 +30450,10 @@ var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
     }
 });
 
+// router.beforeEach((to, from, next) => {
+//     next();
+// });
+
 /* harmony default export */ __webpack_exports__["a"] = (router);
 
 /***/ }),
@@ -46996,7 +47000,8 @@ var app = new Vue({
     router: __WEBPACK_IMPORTED_MODULE_3__router_js__["a" /* default */],
     store: __WEBPACK_IMPORTED_MODULE_4__store__["a" /* default */],
     beforeMount: function beforeMount() {
-        this.$store.dispatch('actionPostOpenFetch');
+        if (this.navSelect !== 'notfound') this.$store.dispatch('actionPostOpenFetch');
+        console.log(this.$route.name);
     },
     data: function data() {
         return {
@@ -80828,48 +80833,57 @@ var render = function() {
             _c("div", { staticClass: "card card-success card-outline" }, [
               _vm._m(1),
               _vm._v(" "),
-              _c("div", { staticClass: "card-body" }, [
-                _c(
-                  "ul",
-                  { staticClass: "projects-progress" },
-                  _vm._l(_vm.projects, function(project) {
-                    return _c("li", { key: project.id }, [
-                      _c("h5", [_vm._v(_vm._s(project.name))]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "progress-group" }, [
-                        _c("b", [_vm._v(_vm._s(project.close))]),
-                        _vm._v(
-                          "/" +
-                            _vm._s(project.open + project.close) +
-                            "\n                                        "
-                        ),
-                        _c("span", { staticClass: "float-right" }, [
-                          _vm._v(_vm._s(project.percent) + "% ")
-                        ]),
+              _c(
+                "div",
+                {
+                  staticClass: "card-body v-scroll",
+                  staticStyle: { "max-height": "300px", "overflow-y": "auto" }
+                },
+                [
+                  _c(
+                    "ul",
+                    { staticClass: "projects-progress" },
+                    _vm._l(_vm.projects, function(project) {
+                      return _c("li", { key: project.id }, [
+                        _c("h5", [_vm._v(_vm._s(project.name))]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "progress progress-sm" }, [
-                          _c(
-                            "div",
-                            {
-                              staticClass:
-                                "progress-bar progress-bar-striped bg-success",
-                              class: { "bg-danger": project.status == "close" },
-                              style: { width: project.percent + "%" },
-                              attrs: {
-                                role: "progressbar",
-                                "aria-valuenow": "100",
-                                "aria-valuemin": "0",
-                                "aria-valuemax": "100"
-                              }
-                            },
-                            [_vm._v(_vm._s(_vm._f("upText")(project.status)))]
-                          )
+                        _c("div", { staticClass: "progress-group" }, [
+                          _c("b", [_vm._v(_vm._s(project.close))]),
+                          _vm._v(
+                            "/" +
+                              _vm._s(project.open + project.close) +
+                              "\n                                        "
+                          ),
+                          _c("span", { staticClass: "float-right" }, [
+                            _vm._v(_vm._s(project.percent) + "% ")
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "progress progress-sm" }, [
+                            _c(
+                              "div",
+                              {
+                                staticClass:
+                                  "progress-bar progress-bar-striped bg-success",
+                                class: {
+                                  "bg-danger": project.status == "close"
+                                },
+                                style: { width: project.percent + "%" },
+                                attrs: {
+                                  role: "progressbar",
+                                  "aria-valuenow": "100",
+                                  "aria-valuemin": "0",
+                                  "aria-valuemax": "100"
+                                }
+                              },
+                              [_vm._v(_vm._s(_vm._f("upText")(project.status)))]
+                            )
+                          ])
                         ])
                       ])
-                    ])
-                  })
-                )
-              ])
+                    })
+                  )
+                ]
+              )
             ])
           ]),
           _vm._v(" "),
@@ -88979,7 +88993,7 @@ var render = function() {
           "div",
           {
             ref: "message",
-            staticClass: "direct-chat-messages",
+            staticClass: "direct-chat-messages v-scroll",
             staticStyle: { height: "350px" },
             attrs: { id: "wap-message" }
           },
@@ -92826,6 +92840,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         updateUnreadCount: function updateUnreadCount(contact, reset) {
             this.$store.dispatch('actionUpdateUnreadCount', { contact: contact, reset: reset });
+        },
+        openChatBox: function openChatBox() {
+            if (!this.boxOpen) this.boxOpen = true;
+        },
+        closeChatBox: function closeChatBox() {
+            this.boxOpen = false;
         }
     },
     data: function data() {
@@ -92833,7 +92853,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             selectedContact: null,
             talklist: [],
             message: '',
-            openContact: false
+            openContact: false,
+            boxOpen: false,
+            boxEnter: false
         };
     },
 
@@ -92898,36 +92920,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             _this4.hanleIncoming(message);
         });
 
-        var element = $(vm.$refs.fchat);
+        var element = vm.$refs.fchat;
 
         setTimeout(function () {
-            element.addClass("enter");
+            vm.boxEnter = true;
         }, 1000);
-
-        element.click(openElement);
-
-        function openElement() {
-            var messages = element.find('.messages');
-            element.find('>i').hide();
-            element.addClass('expand');
-            element.find('.chat').addClass('enter');
-            element.off('click', openElement);
-            element.find('[data-widget="closechat"]').click(closeElement);
-        }
-
-        function closeElement() {
-            element.find('.chat').removeClass('enter').hide();
-            element.find('>i').show();
-            element.removeClass('expand');
-            element.find('.header button').off('click', closeElement);
-            setTimeout(function () {
-                element.find('.chat').removeClass('enter').show();
-                element.click(openElement);
-            }, 500);
-        }
     },
     created: function created() {
-        if (!this.selectedContact) this.openContact = true;
+        if (this.selectedContact === null) this.openContact = true;
     },
 
     components: {
@@ -93270,143 +93270,169 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { ref: "fchat", staticClass: "floating-chat" }, [
-    _c("i", {
-      staticClass: "fa fa-comments",
-      staticStyle: { color: "white" },
-      attrs: { "aria-hidden": "true" }
-    }),
-    _vm._v(" "),
-    _vm.countUnread
-      ? _c("i", { staticClass: "badge badge-danger count-unread" }, [
-          _vm._v(_vm._s(_vm.countUnread))
-        ])
-      : _vm._e(),
-    _vm._v(" "),
-    _c("div", { staticClass: "chat" }, [
-      _c(
-        "div",
-        {
-          staticClass: "card direct-chat card-outline",
-          class: [
-            _vm.boxColor,
-            _vm.directChatColor,
-            { "direct-chat-contacts-open": _vm.openContact }
-          ]
-        },
-        [
-          _c("div", { staticClass: "card-header" }, [
-            _c("h3", { staticClass: "card-title" }, [
-              _vm._v(
-                _vm._s(
-                  _vm.selectedContact
-                    ? _vm.selectedContact.name
-                    : "Select a Contact"
-                )
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-tools" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-tool",
-                  attrs: {
-                    type: "button",
-                    "data-toggle": "tooltip",
-                    title: "Contacts"
-                  },
-                  on: {
-                    click: function($event) {
-                      _vm.openContact = !_vm.openContact
-                    }
-                  }
-                },
-                [_c("i", { staticClass: "fa fa-comments" })]
-              ),
-              _vm._v(" "),
-              _vm._m(0)
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "card-body", staticStyle: { overflow: "hidden" } },
-            [
-              _c(
-                "div",
-                {
-                  ref: "feed",
-                  staticClass: "direct-chat-messages v-scroll",
-                  staticStyle: { height: "240px" }
-                },
-                _vm._l(_vm.talklist, function(item, index) {
-                  return _c("va-direct-chat-item", {
-                    key: index,
-                    attrs: {
-                      name: item.name,
-                      date: item.created_at,
-                      profileImage: item.photo,
-                      message: item.text,
-                      isMine: item.isMine
-                    }
-                  })
-                })
-              ),
-              _vm._v(" "),
-              _c("va-direct-chat-contact", {
-                attrs: { contacts: _vm.contacts },
-                on: { selected: _vm.startConversationWith }
-              })
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "footer" }, [
-            _c("textarea", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.message,
-                  expression: "message"
-                }
-              ],
-              staticClass: "text-box",
-              domProps: { value: _vm.message },
-              on: {
-                keydown: _vm.typing,
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.message = $event.target.value
-                }
-              }
-            }),
-            _vm._v(" "),
-            _c("button", { on: { click: _vm.sendMessage } }, [_vm._v("send")])
+  return _c(
+    "div",
+    {
+      ref: "fchat",
+      staticClass: "floating-chat",
+      class: { expand: _vm.boxOpen, enter: _vm.boxEnter },
+      on: { click: _vm.openChatBox }
+    },
+    [
+      _c("i", {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: !_vm.boxOpen,
+            expression: "!boxOpen"
+          }
+        ],
+        staticClass: "fa fa-comments",
+        staticStyle: { color: "white" },
+        attrs: { "aria-hidden": "true" }
+      }),
+      _vm._v(" "),
+      _vm.countUnread && !_vm.boxOpen
+        ? _c("i", { staticClass: "badge badge-danger count-unread" }, [
+            _vm._v(_vm._s(_vm.countUnread))
           ])
-        ]
-      )
-    ])
-  ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.boxOpen
+        ? _c("div", { staticClass: "chat", class: { enter: _vm.boxOpen } }, [
+            _c(
+              "div",
+              {
+                staticClass: "card direct-chat card-outline",
+                class: [
+                  _vm.boxColor,
+                  _vm.directChatColor,
+                  { "direct-chat-contacts-open": _vm.openContact }
+                ]
+              },
+              [
+                _c("div", { staticClass: "card-header" }, [
+                  _c("h3", { staticClass: "card-title" }, [
+                    _vm._v(
+                      _vm._s(
+                        _vm.selectedContact
+                          ? _vm.selectedContact.name
+                          : "Select a Contact"
+                      )
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "card-tools" }, [
+                    _vm.selectedContact
+                      ? _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-tool",
+                            attrs: {
+                              type: "button",
+                              "data-toggle": "tooltip",
+                              title: "Contacts"
+                            },
+                            on: {
+                              click: function($event) {
+                                _vm.openContact = !_vm.openContact
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fa fa-comments" })]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-tool",
+                        attrs: { type: "button", "data-widget": "closechat" },
+                        on: {
+                          click: function($event) {
+                            $event.stopPropagation()
+                            return _vm.closeChatBox($event)
+                          }
+                        }
+                      },
+                      [_c("i", { staticClass: "fa fa-times" })]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "card-body",
+                    staticStyle: { overflow: "hidden" }
+                  },
+                  [
+                    _c(
+                      "div",
+                      {
+                        ref: "feed",
+                        staticClass: "direct-chat-messages v-scroll",
+                        class: { "no-messager": _vm.talklist.length == 0 },
+                        staticStyle: { height: "240px" }
+                      },
+                      _vm._l(_vm.talklist, function(item, index) {
+                        return _c("va-direct-chat-item", {
+                          key: index,
+                          attrs: {
+                            name: item.name,
+                            date: item.created_at,
+                            profileImage: item.photo,
+                            message: item.text,
+                            isMine: item.isMine
+                          }
+                        })
+                      })
+                    ),
+                    _vm._v(" "),
+                    _c("va-direct-chat-contact", {
+                      attrs: { contacts: _vm.contacts },
+                      on: { selected: _vm.startConversationWith }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "footer" }, [
+                  _c("textarea", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.message,
+                        expression: "message"
+                      }
+                    ],
+                    staticClass: "text-box",
+                    domProps: { value: _vm.message },
+                    on: {
+                      keydown: _vm.typing,
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.message = $event.target.value
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("button", { on: { click: _vm.sendMessage } }, [
+                    _vm._v("send")
+                  ])
+                ])
+              ]
+            )
+          ])
+        : _vm._e()
+    ]
+  )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "btn btn-tool",
-        attrs: { type: "button", "data-widget": "closechat" }
-      },
-      [_c("i", { staticClass: "fa fa-times" })]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {

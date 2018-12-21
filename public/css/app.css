@@ -30368,3 +30368,10 @@ code {
   border-right-color: #194458;
 }
 
+.no-messager {
+  background-image: url("/img/system/rsz_no_message.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+

@@ -1,23 +1,23 @@
 <template>
-    <div class="floating-chat" ref="fchat">
-        <i class="fa fa-comments" style="color: white;" aria-hidden="true"></i>
-        <i class="badge badge-danger count-unread" v-if="countUnread">{{ countUnread }}</i>
-         <div class="chat">
+    <div class="floating-chat" :class="{ 'expand':boxOpen, 'enter':boxEnter }" ref="fchat" @click="openChatBox">
+        <i v-show="!boxOpen" class="fa fa-comments" style="color: white;" aria-hidden="true"></i>
+        <i class="badge badge-danger count-unread" v-if="(countUnread && !boxOpen)">{{ countUnread }}</i>
+        <div class="chat" v-if="boxOpen" :class="{'enter':boxOpen}">
             <!-- DIRECT CHAT -->
             <div class="card direct-chat card-outline" :class="[boxColor, directChatColor, {'direct-chat-contacts-open': openContact}]">
                 <div class="card-header">
                     <h3 class="card-title">{{ (selectedContact) ? selectedContact.name : 'Select a Contact' }}</h3>
                     <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-toggle="tooltip" @click="openContact = !openContact" title="Contacts">
+                        <button v-if="selectedContact" type="button" class="btn btn-tool" data-toggle="tooltip" @click="openContact = !openContact" title="Contacts">
                             <i class="fa fa-comments"></i>
                         </button>
-                        <button type="button" class="btn btn-tool" data-widget="closechat"><i class="fa fa-times"></i></button>
+                        <button @click.stop="closeChatBox" type="button" class="btn btn-tool" data-widget="closechat"><i class="fa fa-times"></i></button>
                     </div>
                 </div>
                 <!-- /.box-header -->
                 <div class="card-body" style="overflow: hidden;">
                     <!-- Conversations are loaded here -->
-                    <div class="direct-chat-messages v-scroll" ref="feed" style="height: 240px;">
+                    <div class="direct-chat-messages v-scroll" :class="{ 'no-messager': talklist.length == 0 }" ref="feed" style="height: 240px;">
                         <va-direct-chat-item v-for="(item, index) in talklist" :key="index" :name="item.name" :date="item.created_at"
                             :profileImage="item.photo" :message="item.text" :isMine="item.isMine"></va-direct-chat-item>
                     </div>
@@ -110,6 +110,13 @@
             },
             updateUnreadCount(contact, reset) {
                 this.$store.dispatch('actionUpdateUnreadCount', { contact, reset })
+            },
+            openChatBox(){
+                if(!this.boxOpen)
+                    this.boxOpen = true;
+            },
+            closeChatBox(){
+                this.boxOpen = false;
             }
         },
         data() {
@@ -117,7 +124,9 @@
                 selectedContact: null,
                 talklist: [],
                 message: '',
-                openContact: false
+                openContact: false,
+                boxOpen: false,
+                boxEnter: false,
             };
         },
         computed: {
@@ -178,36 +187,14 @@
                     this.hanleIncoming(message);
                 });
             
-            var element = $(vm.$refs.fchat)
+            var element = vm.$refs.fchat
 
             setTimeout(function () {
-                element.addClass("enter");
+               vm.boxEnter = true;
             }, 1000);
-            
-            element.click(openElement);
-
-            function openElement() {
-                var messages = element.find('.messages');
-                element.find('>i').hide();
-                element.addClass('expand');
-                element.find('.chat').addClass('enter');
-                element.off('click', openElement);
-                element.find('[data-widget="closechat"]').click(closeElement);
-            }
-
-            function closeElement() {
-                element.find('.chat').removeClass('enter').hide();
-                element.find('>i').show();
-                element.removeClass('expand');
-                element.find('.header button').off('click', closeElement);
-                setTimeout(function () {
-                    element.find('.chat').removeClass('enter').show()
-                    element.click(openElement);
-                }, 500);
-            }
         },
         created() {
-            if(!this.selectedContact)
+            if(this.selectedContact === null)
                 this.openContact = true
         },
         components: {
