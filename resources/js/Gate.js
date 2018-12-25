@@ -53,6 +53,6 @@ export default class Gate{
     }
     
     idLogin(){
-        return this.user.id
+        return (this.user) ? this.user.id : null;
     }
 }

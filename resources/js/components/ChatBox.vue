@@ -102,9 +102,7 @@
                     // })
                     
                 })
-                .catch(error => {
-                    console.log(error)
-                })
+                .catch(error => {})
             },
             sendMessage() {
                 if(!this.message || this.message.trim() === '') {
@@ -124,9 +122,7 @@
                     Fire.$emit('added_message', response.data);
                     this.message = ''
                 })
-                .catch(error => {
-                    console.log(error)
-                })
+                .catch(error => {})
             },
             toBottom(){
                 $("#wap-message")

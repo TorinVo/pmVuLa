@@ -4,12 +4,10 @@ export function apiFetchProjects(page) {
             .then(
                 response => response
             )
-            .catch(error => error)
     }
     
     return axios.get('/api/project')
         .then(response => response)
-        .catch(error => error)
 }
 
 export function apiFetchAllProjects() {
@@ -19,6 +17,5 @@ export function apiFetchAllProjects() {
         }
     })
     .then(response => response)
-    .catch(error => error)
 }
 

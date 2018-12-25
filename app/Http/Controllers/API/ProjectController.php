@@ -8,6 +8,7 @@ use App\Project;
 use App\Option;
 use App\Post;
 use function GuzzleHttp\json_decode;
+use function GuzzleHttp\json_encode;
 
 class ProjectController extends Controller
 {
@@ -39,8 +40,8 @@ class ProjectController extends Controller
                 $query->groupBy('project_id');
                 $query->selectRaw('project_id, count(IF(status=\'open\', 1, null)) as open, count(IF(status=\'close\', 1, null)) as close');
             }])->latest()->paginate(10);
+            //dd($projects);
         }
-
         $projects->transform(function($project) {
             $project->percent = 100;
             $project->close = 0;
@@ -58,7 +59,8 @@ class ProjectController extends Controller
             unset($project->posts);
             return $project;
         });
-
+        if($request->type)
+            return json_encode(['data'=> $projects]);
         return $projects;
     }
 
@@ -124,7 +126,7 @@ class ProjectController extends Controller
 
     public function getProject(){
         $data['filter'] = json_decode($this->findOrCreateOption(), true);
-        $data['projects'] = Project::select('id', 'name')->get();
+        //$data['projects'] = Project::select('id', 'name')->get();
         return $data;
     }
 

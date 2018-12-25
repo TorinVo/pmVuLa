@@ -81,7 +81,7 @@
                                                         <select class="form-control form-control-sm"
                                                             v-model="form.projectSelect">
                                                             <option value="0">All</option>
-                                                            <option v-for="project in projects" :value="project.id"
+                                                            <option v-for="project in projects.data" :value="project.id"
                                                                 :key="project.id">{{ project.name }}</option>
                                                         </select>
                                                     </div>
@@ -176,7 +176,8 @@
                             </div>
                             <!-- /.card-body -->
                             <div class="card-footer clearfix">
-                                <pagination :data="tickets" @pagination-change-page="getResults"></pagination>
+                                <pagination :data="tickets" @pagination-change-page="getResults" :show-disabled="true">
+                                </pagination>
                             </div>
                         </div>
                     </div>
@@ -218,7 +219,7 @@
                                 <select class="form-control form-control-sm" name="project_id" v-model="frmData.project_id"
                                     :class="{ 'is-invalid': frmData.errors.has('project_id') }">
                                     <option value="">-</option>
-                                    <option v-for="project in projects" :value="project.id" :key="project.id">{{
+                                    <option v-for="project in projects.data" :value="project.id" :key="project.id">{{
                                         project.name }}</option>
                                 </select>
                                 <has-error :form="frmData" field="project_id"></has-error>
@@ -239,10 +240,13 @@
 <script>
     import moment from 'moment';
     export default {
+        beforeMount() {
+            this.$store.dispatch('actionProjectAllFetch')
+        },
         data() {
             return {
                 loading: false,
-                projects: {},
+                //projects: {},
                 tickets: {},
                 filter: {},
                 editmode: false,
@@ -266,7 +270,7 @@
             loadProjects() {
                 axios.get('api/getproject')
                     .then(response => {
-                        this.projects = response.data.projects;
+                        //this.projects = response.data.projects;
                         this.form.fill(response.data.filter);
                     });
             },
@@ -399,7 +403,10 @@
                     'btnActive': this.form.btnActive
                 };
                 return data;
-            }
+            },
+            projects() {
+                return this.$store.state.storeProject.projects
+            },
         },
         watch: {
             getFilterData: function () {

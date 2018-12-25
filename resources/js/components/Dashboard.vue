@@ -19,7 +19,7 @@
                             </div>
                             <div class="card-body v-scroll" style="max-height: 300px;overflow-y: auto;">
                                 <ul class="projects-progress">
-                                    <li v-for="project in projects" :key="project.id">
+                                    <li v-for="project in projects.data" :key="project.id">
                                         <h5>{{ project.name }}</h5>
                                         <div class="progress-group">
                                             <b>{{project.close}}</b>/{{project.open+project.close}}

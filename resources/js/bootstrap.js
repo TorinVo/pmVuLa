@@ -39,6 +39,20 @@ if (token) {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
+// axios.interceptors.response.use((response) => {
+//     console.log(response.status);
+//     // Check if the user is no longer signed in,
+//     // if so then we need them to sign back in.
+//     if (response.status === 401) {
+//         window.location.href = '/login';
+//         return;
+//     }
+
+//     return response;
+
+// });
+
+require('./errorHandler');
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

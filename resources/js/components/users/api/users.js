@@ -5,5 +5,4 @@ export function apiFetchUser() {
         }
     })
     .then(response => response)
-    .catch(error => error)
 }

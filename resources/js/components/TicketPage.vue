@@ -66,11 +66,7 @@
                 .then(response => {
                     this.ticket = response.data;
                 })
-                .catch(error => {
-                    if (error.response.status === 404) {
-                        this.$router.push({name: 'notfound'})
-                    }
-                })
+                .catch(error => { })
             },
             actionsTicket(type, id){
                 axios.post('/api/ticketactions', {

@@ -104,9 +104,8 @@ const app = new Vue({
     router,
     store,
     beforeMount() {
-        if(this.navSelect !== 'notfound')
+        if(this.$gate.idLogin())
             this.$store.dispatch('actionPostOpenFetch')
-        console.log(this.$route.name);
     },
     data() {
         return {

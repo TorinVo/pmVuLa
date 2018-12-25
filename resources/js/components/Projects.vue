@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="$gate.isAdminOrDesigner()">
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
@@ -141,6 +141,9 @@
                 </div>
             </div>
         </section>
+    </div>
+    <div v-else>
+        <not-found></not-found>
     </div>
 </template>
 
