@@ -18,6 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResources(['image' => 'API\ImageController']);
+Route::apiResources(['event' => 'API\EventController']);
 Route::apiResources(['message' => 'API\MesageController']);
 Route::apiResources(['comment' => 'API\CommentController']);
 Route::apiResources(['ticket' => 'API\TicketController']);

@@ -6,6 +6,8 @@
 @import 'variables';
 
 // Bootstrap
+// @import '~admin-lte/plugins/fullcalendar/fullcalendar.css';
+@import '~fullcalendar/dist/fullcalendar.css';
 @import '~bootstrap/scss/bootstrap';
 @import '~admin-lte/dist/css/adminlte.css';
 
@@ -523,4 +525,47 @@ code{
       font-size: 14px;
     }
   }
+
+//   Full calendar
+.fc-content {
+    padding: 5px;
+}
+
+.fc-event {
+    border-radius: 0 !important;
+}
+
+.fc-grid {
+    width: 100%;
+    border: 0;
+}
+
+.fc-toolbar.fc-header-toolbar {
+    margin-bottom: 0;
+}
+
+.fc-toolbar {
+    padding: .5rem;
+    margin: 0;
+}
+
+.fc-day-grid-event .fc-time {
+    display: none;
+}
+
+.fc-button {
+    border-radius: 2px !important;
+    border-color: #e2e7f1 !important;
+    background: #fff !important;
+    height: auto !important;
+    padding: 5px 10px !important;
+}
+
+.fc-state-active {
+    background-color: #f2f2f2 !important;
+    box-shadow: none !important;
+}
+.fc-button:focus {
+    outline: none;
+}
   

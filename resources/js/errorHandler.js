@@ -35,6 +35,8 @@ function errorResponseHandler(error) {
         if (error.response.status === 401) {
             window.location.href = '/login';
             return;
+        }else if(error.response.status === 422){
+            return Promise.reject(error);
         }else if(error.response.status === 404){
             router.push({name: '404'})
             return;
@@ -43,6 +45,8 @@ function errorResponseHandler(error) {
             type: 'error',
             title: 'Oops...',
             showCancelButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
             text: error.response.data.message
         }).then((result) => {
             if (result.value) {

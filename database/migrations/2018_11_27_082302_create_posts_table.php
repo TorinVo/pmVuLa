@@ -18,7 +18,7 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->boolean('reviewed')->default(false);
             $table->string('status', 20)->default('open');
-            $table->string('priority', 20)->default('priority');
+            $table->string('priority', 20)->default('low');
             
             $table->unsignedInteger('project_id');
             $table->foreign('project_id')

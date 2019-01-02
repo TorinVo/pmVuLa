@@ -15,6 +15,7 @@ mix.js([
       'resources/js/app.js',
       'node_modules/admin-lte/plugins/daterangepicker/daterangepicker.js',
       'node_modules/admin-lte/plugins/iCheck/icheck.min.js',
+      // 'node_modules/admin-lte/plugins/fullcalendar/fullcalendar.min.js',
       'public/js/paste_image_reader.js',
    ], 'public/js')
    .sass('resources/sass/app.scss', 'public/css')

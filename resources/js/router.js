@@ -7,10 +7,11 @@ let routes = [
     { path: '/developer', component: require('./components/Developer.vue'), name: 'developer' },
     { path: '/profile', component: require('./components/Profile.vue'), name: 'profile' },
     { path: '/users', component: require('./components/Users.vue'), name: 'users' },
+    { path: '/events', component: require('./components/Calendar.vue'), name: 'events' },
     { path: '/projects', component: require('./components/Projects.vue'), name: 'projects' },
     { path: '/tickets', component: require('./components/TicketDashboard.vue'), name: 'tickets' },
     { path: '/ticket/:ticket', component: require('./components/TicketPage.vue'), name: 'ticket' },
-    { path: '*', component: require('./components/Page404.vue'), name: 'notfound' },
+    // { path: '*', component: require('./components/Page404.vue'), name: 'notfound' },
     { path: '/404', component: require('./components/Page404.vue'), name: '404' },
 ];
 

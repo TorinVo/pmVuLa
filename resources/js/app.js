@@ -1,8 +1,25 @@
 require('./bootstrap');
-
+import 'fullcalendar';
 window.Vue = require('vue');
 //import Vuex from 'vuex';
 import moment from 'moment';
+
+import datePicker from 'vue-bootstrap-datetimepicker';
+import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
+Vue.use(datePicker);
+jQuery.extend(true, jQuery.fn.datetimepicker.defaults, {
+    icons: {
+      time: 'fas fa-clock',
+      date: 'fas fa-calendar',
+      up: 'fas fa-arrow-up',
+      down: 'fas fa-arrow-down',
+      previous: 'fas fa-chevron-left',
+      next: 'fas fa-chevron-right',
+      today: 'fas fa-calendar-check',
+      clear: 'fas fa-trash-alt',
+      close: 'fas fa-times-circle'
+    }
+});
 import {
     Form,
     HasError,
@@ -89,6 +106,7 @@ Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.component('breadcrumb', require('./components/Breadcrumb.vue'));
 
 Vue.component('va-direct-chat', require('./components/widgets/VADirectChat.vue'));
+Vue.component('calendar', require('./components/Calendar.vue'));
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
