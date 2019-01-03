@@ -25,10 +25,9 @@
             </div>
             <div class="row">
                 <div class="col-8">
-                    <div class="checkbox icheck">
-                        <label>
-                            <input type="checkbox" name="remember" id="remember" {{ old( 'remember') ? 'checked' : '' }}> Remember Me
-                        </label>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" name="remember" id="remember" {{ old( 'remember') ? 'checked' : '' }}>
+                        <label class="custom-control-label" for="remember">Remember Me</label>
                     </div>
                 </div>
                 <!-- /.col -->

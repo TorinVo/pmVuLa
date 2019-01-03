@@ -46947,8 +46947,7 @@ module.exports = function(obj, fn){
 __webpack_require__(168);
 __webpack_require__(324);
 __webpack_require__(325);
-__webpack_require__(326);
-module.exports = __webpack_require__(327);
+module.exports = __webpack_require__(326);
 
 
 /***/ }),
@@ -47120,16 +47119,6 @@ var app = new Vue({
     },
     watch: {
         '$route': 'navChange'
-    }
-});
-
-$(function () {
-    if ($('#remember')) {
-        $('#remember').iCheck({
-            checkboxClass: 'icheckbox_square-blue',
-            radioClass: 'iradio_square-blue',
-            increaseArea: '20%'
-        });
     }
 });
 
@@ -77145,6 +77134,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -77181,7 +77171,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             axios.get('api/getproject').then(function (response) {
                 //this.projects = response.data.projects;
-                _this.form.fill(response.data.filter);
+                var data = response.data.filter;
+                data.hiddenClose = JSON.parse(data.hiddenClose);
+                _this.form.fill(data);
             });
         },
         changeDate: function changeDate(num) {
@@ -77309,7 +77301,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var data = {
                 'datefrom': this.form.datefrom,
                 'dateto': this.form.dateto,
-                'hiddenClose': this.form.hiddenClose,
+                'hiddenClose': JSON.parse(this.form.hiddenClose),
                 'projectSelect': this.form.projectSelect,
                 'btnActive': this.form.btnActive
             };
@@ -77323,7 +77315,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         getFilterData: function getFilterData() {
             $('#reservation').data('daterangepicker').setStartDate(this.form.datefrom);
             $('#reservation').data('daterangepicker').setEndDate(this.form.dateto);
-            $('#txt_hd_close').iCheck(JSON.parse(this.form.hiddenClose) ? 'check' : 'uncheck');
+            //$('#txt_hd_close').iCheck(JSON.parse(this.form.hiddenClose) ? 'check' : 'uncheck');
             this.loadTickets();
         }
     },
@@ -77346,13 +77338,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 });
             }
 
-            $('#txt_hd_close').iCheck({
-                checkboxClass: 'icheckbox_square-blue',
-                radioClass: 'iradio_square-blue',
-                increaseArea: '20%'
-            }).trigger('ifChanged').on('ifClicked', function (event) {
-                vm.form.hiddenClose = !JSON.parse(vm.form.hiddenClose);
-            });
+            // $('#txt_hd_close').iCheck({
+            //     checkboxClass: 'icheckbox_square-blue',
+            //     radioClass   : 'iradio_square-blue',
+            //     increaseArea : '20%'
+            // }).trigger('ifChanged').on('ifClicked', function(event){
+            //    vm.form.hiddenClose = !JSON.parse(vm.form.hiddenClose);
+            // });
         });
     }
 });
@@ -77598,10 +77590,9 @@ var render = function() {
                             _vm._v(" "),
                             _c("div", { staticClass: "form-group mb-0" }, [
                               _c(
-                                "label",
+                                "div",
                                 {
-                                  staticClass: "form-check-label mb-1",
-                                  attrs: { for: "exampleCheck1" }
+                                  staticClass: "custom-control custom-checkbox"
                                 },
                                 [
                                   _c("input", {
@@ -77613,12 +77604,11 @@ var render = function() {
                                         expression: "form.hiddenClose"
                                       }
                                     ],
-                                    staticClass: "form-check-input",
+                                    staticClass: "custom-control-input",
                                     attrs: {
                                       type: "checkbox",
-                                      id: "txt_hd_close",
-                                      "true-value": "true",
-                                      "false-value": "false"
+                                      name: "txt_hd_close",
+                                      id: "txt_hd_close"
                                     },
                                     domProps: {
                                       checked: Array.isArray(
@@ -77626,13 +77616,13 @@ var render = function() {
                                       )
                                         ? _vm._i(_vm.form.hiddenClose, null) >
                                           -1
-                                        : _vm._q(_vm.form.hiddenClose, "true")
+                                        : _vm.form.hiddenClose
                                     },
                                     on: {
                                       change: function($event) {
                                         var $$a = _vm.form.hiddenClose,
                                           $$el = $event.target,
-                                          $$c = $$el.checked ? "true" : "false"
+                                          $$c = $$el.checked ? true : false
                                         if (Array.isArray($$a)) {
                                           var $$v = null,
                                             $$i = _vm._i($$a, $$v)
@@ -77659,8 +77649,14 @@ var render = function() {
                                       }
                                     }
                                   }),
-                                  _vm._v(
-                                    "\n                                                    Hide closed issues"
+                                  _vm._v(" "),
+                                  _c(
+                                    "label",
+                                    {
+                                      staticClass: "custom-control-label",
+                                      attrs: { for: "txt_hd_close" }
+                                    },
+                                    [_vm._v("Hide closed issues")]
                                   )
                                 ]
                               )
@@ -115190,22 +115186,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 /* 325 */
 /***/ (function(module, exports) {
 
-/*! iCheck v1.0.1 by Damir Sultanov, http://git.io/arlzeA, MIT Licensed */
-(function(h){function F(a,b,d){var c=a[0],e=/er/.test(d)?m:/bl/.test(d)?s:l,f=d==H?{checked:c[l],disabled:c[s],indeterminate:"true"==a.attr(m)||"false"==a.attr(w)}:c[e];if(/^(ch|di|in)/.test(d)&&!f)D(a,e);else if(/^(un|en|de)/.test(d)&&f)t(a,e);else if(d==H)for(e in f)f[e]?D(a,e,!0):t(a,e,!0);else if(!b||"toggle"==d){if(!b)a[p]("ifClicked");f?c[n]!==u&&t(a,e):D(a,e)}}function D(a,b,d){var c=a[0],e=a.parent(),f=b==l,A=b==m,B=b==s,K=A?w:f?E:"enabled",p=k(a,K+x(c[n])),N=k(a,b+x(c[n]));if(!0!==c[b]){if(!d&&
-b==l&&c[n]==u&&c.name){var C=a.closest("form"),r='input[name="'+c.name+'"]',r=C.length?C.find(r):h(r);r.each(function(){this!==c&&h(this).data(q)&&t(h(this),b)})}A?(c[b]=!0,c[l]&&t(a,l,"force")):(d||(c[b]=!0),f&&c[m]&&t(a,m,!1));L(a,f,b,d)}c[s]&&k(a,y,!0)&&e.find("."+I).css(y,"default");e[v](N||k(a,b)||"");B?e.attr("aria-disabled","true"):e.attr("aria-checked",A?"mixed":"true");e[z](p||k(a,K)||"")}function t(a,b,d){var c=a[0],e=a.parent(),f=b==l,h=b==m,q=b==s,p=h?w:f?E:"enabled",t=k(a,p+x(c[n])),
-u=k(a,b+x(c[n]));if(!1!==c[b]){if(h||!d||"force"==d)c[b]=!1;L(a,f,p,d)}!c[s]&&k(a,y,!0)&&e.find("."+I).css(y,"pointer");e[z](u||k(a,b)||"");q?e.attr("aria-disabled","false"):e.attr("aria-checked","false");e[v](t||k(a,p)||"")}function M(a,b){if(a.data(q)){a.parent().html(a.attr("style",a.data(q).s||""));if(b)a[p](b);a.off(".i").unwrap();h(G+'[for="'+a[0].id+'"]').add(a.closest(G)).off(".i")}}function k(a,b,d){if(a.data(q))return a.data(q).o[b+(d?"":"Class")]}function x(a){return a.charAt(0).toUpperCase()+
-a.slice(1)}function L(a,b,d,c){if(!c){if(b)a[p]("ifToggled");a[p]("ifChanged")[p]("if"+x(d))}}var q="iCheck",I=q+"-helper",u="radio",l="checked",E="un"+l,s="disabled",w="determinate",m="in"+w,H="update",n="type",v="addClass",z="removeClass",p="trigger",G="label",y="cursor",J=/ipad|iphone|ipod|android|blackberry|windows phone|opera mini|silk/i.test(navigator.userAgent);h.fn[q]=function(a,b){var d='input[type="checkbox"], input[type="'+u+'"]',c=h(),e=function(a){a.each(function(){var a=h(this);c=a.is(d)?
-c.add(a):c.add(a.find(d))})};if(/^(check|uncheck|toggle|indeterminate|determinate|disable|enable|update|destroy)$/i.test(a))return a=a.toLowerCase(),e(this),c.each(function(){var c=h(this);"destroy"==a?M(c,"ifDestroyed"):F(c,!0,a);h.isFunction(b)&&b()});if("object"!=typeof a&&a)return this;var f=h.extend({checkedClass:l,disabledClass:s,indeterminateClass:m,labelHover:!0,aria:!1},a),k=f.handle,B=f.hoverClass||"hover",x=f.focusClass||"focus",w=f.activeClass||"active",y=!!f.labelHover,C=f.labelHoverClass||
-"hover",r=(""+f.increaseArea).replace("%","")|0;if("checkbox"==k||k==u)d='input[type="'+k+'"]';-50>r&&(r=-50);e(this);return c.each(function(){var a=h(this);M(a);var c=this,b=c.id,e=-r+"%",d=100+2*r+"%",d={position:"absolute",top:e,left:e,display:"block",width:d,height:d,margin:0,padding:0,background:"#fff",border:0,opacity:0},e=J?{position:"absolute",visibility:"hidden"}:r?d:{position:"absolute",opacity:0},k="checkbox"==c[n]?f.checkboxClass||"icheckbox":f.radioClass||"i"+u,m=h(G+'[for="'+b+'"]').add(a.closest(G)),
-A=!!f.aria,E=q+"-"+Math.random().toString(36).replace("0.",""),g='<div class="'+k+'" '+(A?'role="'+c[n]+'" ':"");m.length&&A&&m.each(function(){g+='aria-labelledby="';this.id?g+=this.id:(this.id=E,g+=E);g+='"'});g=a.wrap(g+"/>")[p]("ifCreated").parent().append(f.insert);d=h('<ins class="'+I+'"/>').css(d).appendTo(g);a.data(q,{o:f,s:a.attr("style")}).css(e);f.inheritClass&&g[v](c.className||"");f.inheritID&&b&&g.attr("id",q+"-"+b);"static"==g.css("position")&&g.css("position","relative");F(a,!0,H);
-if(m.length)m.on("click.i mouseover.i mouseout.i touchbegin.i touchend.i",function(b){var d=b[n],e=h(this);if(!c[s]){if("click"==d){if(h(b.target).is("a"))return;F(a,!1,!0)}else y&&(/ut|nd/.test(d)?(g[z](B),e[z](C)):(g[v](B),e[v](C)));if(J)b.stopPropagation();else return!1}});a.on("click.i focus.i blur.i keyup.i keydown.i keypress.i",function(b){var d=b[n];b=b.keyCode;if("click"==d)return!1;if("keydown"==d&&32==b)return c[n]==u&&c[l]||(c[l]?t(a,l):D(a,l)),!1;if("keyup"==d&&c[n]==u)!c[l]&&D(a,l);else if(/us|ur/.test(d))g["blur"==
-d?z:v](x)});d.on("click mousedown mouseup mouseover mouseout touchbegin.i touchend.i",function(b){var d=b[n],e=/wn|up/.test(d)?w:B;if(!c[s]){if("click"==d)F(a,!1,!0);else{if(/wn|er|in/.test(d))g[v](e);else g[z](e+" "+w);if(m.length&&y&&e==B)m[/ut|nd/.test(d)?z:v](C)}if(J)b.stopPropagation();else return!1}})})}})(window.jQuery||window.Zepto);
-
-
-/***/ }),
-/* 326 */
-/***/ (function(module, exports) {
-
 // Created by STRd6
 // MIT License
 // jquery.paste_image_reader.js
@@ -115265,7 +115245,7 @@ d?z:v](x)});d.on("click mousedown mouseup mouseover mouseout touchbegin.i touche
 })(jQuery);
 
 /***/ }),
-/* 327 */
+/* 326 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

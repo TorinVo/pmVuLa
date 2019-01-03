@@ -14,12 +14,9 @@ const mix = require('laravel-mix');
 mix.js([
       'resources/js/app.js',
       'node_modules/admin-lte/plugins/daterangepicker/daterangepicker.js',
-      'node_modules/admin-lte/plugins/iCheck/icheck.min.js',
-      // 'node_modules/admin-lte/plugins/fullcalendar/fullcalendar.min.js',
       'public/js/paste_image_reader.js',
    ], 'public/js')
    .sass('resources/sass/app.scss', 'public/css')
    .styles([
       'node_modules/admin-lte/plugins/daterangepicker/daterangepicker-bs3.css',
-      'node_modules/admin-lte/plugins/iCheck/square/blue.css',
    ], 'public/css/style.css')

@@ -86,9 +86,10 @@
                                                         </select>
                                                     </div>
                                                     <div class="form-group mb-0">
-                                                        <label class="form-check-label mb-1" for="exampleCheck1"><input type="checkbox" v-model="form.hiddenClose"
-                                                            class="form-check-input" id="txt_hd_close" true-value="true" false-value="false">
-                                                        Hide closed issues</label>
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" v-model="form.hiddenClose" name="txt_hd_close" id="txt_hd_close">
+                                                            <label class="custom-control-label" for="txt_hd_close">Hide closed issues</label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -271,7 +272,9 @@
                 axios.get('api/getproject')
                     .then(response => {
                         //this.projects = response.data.projects;
-                        this.form.fill(response.data.filter);
+                        var data = response.data.filter;
+                        data.hiddenClose = JSON.parse(data.hiddenClose);
+                        this.form.fill(data);
                     });
             },
 
@@ -398,7 +401,7 @@
                 let data = {
                     'datefrom': this.form.datefrom,
                     'dateto': this.form.dateto,
-                    'hiddenClose':  this.form.hiddenClose,
+                    'hiddenClose':  JSON.parse(this.form.hiddenClose),
                     'projectSelect': this.form.projectSelect,
                     'btnActive': this.form.btnActive
                 };
@@ -412,7 +415,7 @@
             getFilterData: function () {
                 $('#reservation').data('daterangepicker').setStartDate(this.form.datefrom);
                 $('#reservation').data('daterangepicker').setEndDate(this.form.dateto);
-                $('#txt_hd_close').iCheck(JSON.parse(this.form.hiddenClose) ? 'check' : 'uncheck');
+                //$('#txt_hd_close').iCheck(JSON.parse(this.form.hiddenClose) ? 'check' : 'uncheck');
                 this.loadTickets();
             }
         },
@@ -433,13 +436,13 @@
                     });
                 }
 
-                $('#txt_hd_close').iCheck({
-                    checkboxClass: 'icheckbox_square-blue',
-                    radioClass   : 'iradio_square-blue',
-                    increaseArea : '20%'
-                }).trigger('ifChanged').on('ifClicked', function(event){
-                   vm.form.hiddenClose = !JSON.parse(vm.form.hiddenClose);
-                });
+                // $('#txt_hd_close').iCheck({
+                //     checkboxClass: 'icheckbox_square-blue',
+                //     radioClass   : 'iradio_square-blue',
+                //     increaseArea : '20%'
+                // }).trigger('ifChanged').on('ifClicked', function(event){
+                //    vm.form.hiddenClose = !JSON.parse(vm.form.hiddenClose);
+                // });
             })
         }
     };
