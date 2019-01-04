@@ -11,7 +11,7 @@ let routes = [
     { path: '/projects', component: require('./components/Projects.vue'), name: 'projects' },
     { path: '/tickets', component: require('./components/TicketDashboard.vue'), name: 'tickets' },
     { path: '/ticket/:ticket', component: require('./components/TicketPage.vue'), name: 'ticket' },
-    // { path: '*', component: require('./components/Page404.vue'), name: 'notfound' },
+    { path: '*', component: require('./components/Page404.vue'), name: 'notfound' },
     { path: '/404', component: require('./components/Page404.vue'), name: '404' },
 ];
 

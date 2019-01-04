@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Users</h1>
+                        <h1>Events</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -29,7 +29,7 @@
 
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-primary btn-sm" @click="newEvent()"><i class="fas fa-plus-square"></i>
-                                        New</button>
+                                        Add Event</button>
                                 </div>
                             </div>
                             <!-- /.card-header -->

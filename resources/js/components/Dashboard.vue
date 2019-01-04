@@ -13,6 +13,34 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <!-- small card -->
+                                <div class="small-box bg-info">
+                                    <div class="inner">
+                                        <h3>{{myPosts}}</h3>
+                                        <p>Total My Posts</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-chart-pie"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <!-- small card -->
+                                <div class="small-box bg-success">
+                                    <div class="inner">
+                                        <h3>{{this.$root.ticketOpen}}</h3>
+                                        <p>Total Posts Open</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-chart-pie"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="card card-success card-outline">
                             <div class="card-header">
                                 <h3 class="card-title m-0">Projects Progress</h3> 
@@ -33,31 +61,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-lg-6 col-6">
-                                <!-- small card -->
-                                <div class="small-box bg-info">
-                                    <div class="inner">
-                                        <h3>{{myPosts}}</h3>
-                                        <p>Total My Posts</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-chart-pie"></i>
-                                    </div>
-                                </div>
+                    <div class="col-md-4">
+                        <div class="card card-success card-outline">
+                            <div class="card-header">
+                                <h3 class="card-title m-0">Events</h3> 
                             </div>
-                            <div class="col-lg-6 col-6">
-                                <!-- small card -->
-                                <div class="small-box bg-success">
-                                    <div class="inner">
-                                        <h3>{{this.$root.ticketOpen}}</h3>
-                                        <p>Total Posts Open</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-chart-pie"></i>
-                                    </div>
-                                </div>
+                            <div class="card-body p-0">
+                                <VACalendar ref="calendar"
+                                    :event-sources="eventSources"
+                                    :editable="false"
+                                    :config="config">
+                                </VACalendar>
                             </div>
                         </div>
                     </div>
@@ -68,10 +82,45 @@
 </template>
 
 <script>
+    import VACalendar from './widgets/VACalendar.vue'
+    import moment from 'moment';
     export default {
+        components: {
+            VACalendar
+        },
         beforeMount() {
             this.$store.dispatch('actionProjectAllFetch')
             this.$store.dispatch('actionMyPostFetch')
+        },
+        data () {
+            return {
+                config: {
+                    header: {
+                        left: 'today',
+                        center: '',
+                        right:  'prev,next'
+                    },
+                    defaultView: 'listWeek',
+                    height: 300
+                },
+                eventSources: [
+                    {
+                        events(start, end, timezone, callback) {
+                            self.axios.get(`/api/event`, {
+                                params:{
+                                    timezone: timezone,
+                                    start: moment(start).format('YYYY-MM-DD'),
+                                    end: moment(end).format('YYYY-MM-DD')
+                                }
+                            }).then(response => {
+                                callback(response.data.data)
+                            })
+                        },
+                        color: 'yellow',
+                        textColor: '#fff',
+                    }
+                ]
+            }
         },
         created () {
         },

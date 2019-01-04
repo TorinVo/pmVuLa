@@ -31767,6 +31767,10 @@ code {
   padding: 5px;
 }
 
+.fc-event-container {
+  cursor: pointer;
+}
+
 .fc-event {
   border-radius: 0 !important;
 }

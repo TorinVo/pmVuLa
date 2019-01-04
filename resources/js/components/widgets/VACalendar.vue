@@ -51,6 +51,11 @@
                     return false
                 }
             },
+            allDaySlot: {
+                default() {
+                    return false
+                }
+            },
             config: {
                 type: Object,
                 default() {
@@ -67,6 +72,7 @@
                     editable: this.editable,
                     selectable: this.selectable,
                     selectHelper: this.selectHelper,
+                    allDaySlot: this.allDaySlot,
                     aspectRatio: 2,
                     timeFormat: 'HH:mm',
                     events: this.events,
@@ -151,7 +157,7 @@
                     $(this.$el).fullCalendar('addEventSource', event)
                 })
             })
-            cal.fullCalendar(this.defaultConfig)
+            cal.fullCalendar(_.defaultsDeep(this.config, this.defaultConfig))
         },
         methods: {
             fireMethod(...options) {

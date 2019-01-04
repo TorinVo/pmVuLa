@@ -111,8 +111,7 @@ Vue.component('calendar', require('./components/Calendar.vue'));
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
 
-// const files = require.context('./', true, /\.vue$/i)
-
+//const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => {
 //     return Vue.component(_.last(key.split('/')).split('.')[0], files(key))
 // })
@@ -121,6 +120,9 @@ const app = new Vue({
     el: '#app',
     router,
     store,
+    mounted () {
+        this.$Progress.finish()
+    },
     beforeMount() {
         if(this.$gate.idLogin())
             this.$store.dispatch('actionPostOpenFetch')
@@ -138,7 +140,18 @@ const app = new Vue({
     },
     created() {
         this.navChange()
-
+        this.$Progress.start()
+        this.$router.beforeEach((to, from, next) => {
+            if (to.meta.progress !== undefined) {
+              let meta = to.meta.progress
+              this.$Progress.parseMeta(meta)
+            }
+            this.$Progress.start()
+            next()
+        })
+        this.$router.afterEach((to, from) => {
+            this.$Progress.finish()
+        })
         Echo.channel('notification')
             .listen('MessageNotification', (data) => {
                 let type = data.message.type;

@@ -16697,9 +16697,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
 
-var routes = [{ path: '/', component: __webpack_require__(195), name: 'dashboard' }, { path: '/developer', component: __webpack_require__(198), name: 'developer' }, { path: '/profile', component: __webpack_require__(201), name: 'profile' }, { path: '/users', component: __webpack_require__(204), name: 'users' }, { path: '/events', component: __webpack_require__(29), name: 'events' }, { path: '/projects', component: __webpack_require__(216), name: 'projects' }, { path: '/tickets', component: __webpack_require__(219), name: 'tickets' }, { path: '/ticket/:ticket', component: __webpack_require__(222), name: 'ticket' },
-// { path: '*', component: require('./components/Page404.vue'), name: 'notfound' },
-{ path: '/404', component: __webpack_require__(154), name: '404' }];
+var routes = [{ path: '/', component: __webpack_require__(195), name: 'dashboard' }, { path: '/developer', component: __webpack_require__(198), name: 'developer' }, { path: '/profile', component: __webpack_require__(201), name: 'profile' }, { path: '/users', component: __webpack_require__(204), name: 'users' }, { path: '/events', component: __webpack_require__(29), name: 'events' }, { path: '/projects', component: __webpack_require__(216), name: 'projects' }, { path: '/tickets', component: __webpack_require__(219), name: 'tickets' }, { path: '/ticket/:ticket', component: __webpack_require__(222), name: 'ticket' }, { path: '*', component: __webpack_require__(154), name: 'notfound' }, { path: '/404', component: __webpack_require__(154), name: '404' }];
 
 var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
     // linkExactActiveClass: 'active',
@@ -47065,8 +47063,7 @@ Vue.component('calendar', __webpack_require__(29));
 
 Vue.component('example-component', __webpack_require__(321));
 
-// const files = require.context('./', true, /\.vue$/i)
-
+//const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => {
 //     return Vue.component(_.last(key.split('/')).split('.')[0], files(key))
 // })
@@ -47075,6 +47072,9 @@ var app = new Vue({
     el: '#app',
     router: __WEBPACK_IMPORTED_MODULE_6__router_js__["a" /* default */],
     store: __WEBPACK_IMPORTED_MODULE_7__store__["a" /* default */],
+    mounted: function mounted() {
+        this.$Progress.finish();
+    },
     beforeMount: function beforeMount() {
         if (this.$gate.idLogin()) this.$store.dispatch('actionPostOpenFetch');
     },
@@ -47094,7 +47094,18 @@ var app = new Vue({
         var _this = this;
 
         this.navChange();
-
+        this.$Progress.start();
+        this.$router.beforeEach(function (to, from, next) {
+            if (to.meta.progress !== undefined) {
+                var meta = to.meta.progress;
+                _this.$Progress.parseMeta(meta);
+            }
+            _this.$Progress.start();
+            next();
+        });
+        this.$router.afterEach(function (to, from) {
+            _this.$Progress.finish();
+        });
         Echo.channel('notification').listen('MessageNotification', function (data) {
             var type = data.message.type;
             var message = data.message.message;
@@ -72137,6 +72148,24 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__widgets_VACalendar_vue__ = __webpack_require__(211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__widgets_VACalendar_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__widgets_VACalendar_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -72207,10 +72236,44 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+    components: {
+        VACalendar: __WEBPACK_IMPORTED_MODULE_0__widgets_VACalendar_vue___default.a
+    },
     beforeMount: function beforeMount() {
         this.$store.dispatch('actionProjectAllFetch');
         this.$store.dispatch('actionMyPostFetch');
+    },
+    data: function data() {
+        return {
+            config: {
+                header: {
+                    left: 'today',
+                    center: '',
+                    right: 'prev,next'
+                },
+                defaultView: 'listWeek',
+                height: 300
+            },
+            eventSources: [{
+                events: function events(start, end, timezone, callback) {
+                    self.axios.get('/api/event', {
+                        params: {
+                            timezone: timezone,
+                            start: __WEBPACK_IMPORTED_MODULE_1_moment___default()(start).format('YYYY-MM-DD'),
+                            end: __WEBPACK_IMPORTED_MODULE_1_moment___default()(end).format('YYYY-MM-DD')
+                        }
+                    }).then(function (response) {
+                        callback(response.data.data);
+                    });
+                },
+
+                color: 'yellow',
+                textColor: '#fff'
+            }]
+        };
     },
     created: function created() {},
 
@@ -72239,8 +72302,36 @@ var render = function() {
       _c("div", { staticClass: "container-fluid" }, [
         _c("div", { staticClass: "row" }, [
           _c("div", { staticClass: "col-md-4" }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-12" }, [
+                _c("div", { staticClass: "small-box bg-info" }, [
+                  _c("div", { staticClass: "inner" }, [
+                    _c("h3", [_vm._v(_vm._s(_vm.myPosts))]),
+                    _vm._v(" "),
+                    _c("p", [_vm._v("Total My Posts")])
+                  ]),
+                  _vm._v(" "),
+                  _vm._m(1)
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-12" }, [
+                _c("div", { staticClass: "small-box bg-success" }, [
+                  _c("div", { staticClass: "inner" }, [
+                    _c("h3", [_vm._v(_vm._s(this.$root.ticketOpen))]),
+                    _vm._v(" "),
+                    _c("p", [_vm._v("Total Posts Open")])
+                  ]),
+                  _vm._v(" "),
+                  _vm._m(2)
+                ])
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-4" }, [
             _c("div", { staticClass: "card card-success card-outline" }, [
-              _vm._m(1),
+              _vm._m(3),
               _vm._v(" "),
               _c(
                 "div",
@@ -72296,31 +72387,25 @@ var render = function() {
             ])
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "col-md-8" }, [
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-lg-6 col-6" }, [
-                _c("div", { staticClass: "small-box bg-info" }, [
-                  _c("div", { staticClass: "inner" }, [
-                    _c("h3", [_vm._v(_vm._s(_vm.myPosts))]),
-                    _vm._v(" "),
-                    _c("p", [_vm._v("Total My Posts")])
-                  ]),
-                  _vm._v(" "),
-                  _vm._m(2)
-                ])
-              ]),
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("div", { staticClass: "card card-success card-outline" }, [
+              _vm._m(4),
               _vm._v(" "),
-              _c("div", { staticClass: "col-lg-6 col-6" }, [
-                _c("div", { staticClass: "small-box bg-success" }, [
-                  _c("div", { staticClass: "inner" }, [
-                    _c("h3", [_vm._v(_vm._s(this.$root.ticketOpen))]),
-                    _vm._v(" "),
-                    _c("p", [_vm._v("Total Posts Open")])
-                  ]),
-                  _vm._v(" "),
-                  _vm._m(3)
-                ])
-              ])
+              _c(
+                "div",
+                { staticClass: "card-body p-0" },
+                [
+                  _c("VACalendar", {
+                    ref: "calendar",
+                    attrs: {
+                      "event-sources": _vm.eventSources,
+                      editable: false,
+                      config: _vm.config
+                    }
+                  })
+                ],
+                1
+              )
             ])
           ])
         ])
@@ -72347,6 +72432,22 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-chart-pie" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-chart-pie" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("h3", { staticClass: "card-title m-0" }, [_vm._v("Projects Progress")])
     ])
@@ -72355,16 +72456,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "icon" }, [
-      _c("i", { staticClass: "fas fa-chart-pie" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "icon" }, [
-      _c("i", { staticClass: "fas fa-chart-pie" })
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h3", { staticClass: "card-title m-0" }, [_vm._v("Events")])
     ])
   }
 ]
@@ -74595,6 +74688,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 return false;
             }
         },
+        allDaySlot: {
+            default: function _default() {
+                return false;
+            }
+        },
         config: {
             type: Object,
             default: function _default() {
@@ -74611,6 +74709,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 editable: this.editable,
                 selectable: this.selectable,
                 selectHelper: this.selectHelper,
+                allDaySlot: this.allDaySlot,
                 aspectRatio: 2,
                 timeFormat: 'HH:mm',
                 events: this.events,
@@ -74734,7 +74833,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 __WEBPACK_IMPORTED_MODULE_1_jquery___default()(_this.$el).fullCalendar('addEventSource', event);
             });
         });
-        cal.fullCalendar(this.defaultConfig);
+        cal.fullCalendar(_.defaultsDeep(this.config, this.defaultConfig));
     },
 
     methods: {
@@ -75117,7 +75216,7 @@ var render = function() {
                     },
                     [
                       _c("i", { staticClass: "fas fa-plus-square" }),
-                      _vm._v("\n                                    New")
+                      _vm._v("\n                                    Add Event")
                     ]
                   )
                 ])
@@ -75894,7 +75993,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-sm-6" }, [_c("h1", [_vm._v("Users")])])
+    return _c("div", { staticClass: "col-sm-6" }, [
+      _c("h1", [_vm._v("Events")])
+    ])
   },
   function() {
     var _vm = this
