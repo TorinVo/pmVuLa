@@ -29,7 +29,8 @@
         <!-- /.card-body -->
         <div class="card-footer">
             <div class="input-group">
-                <input type="text" name="message" @keydown="typing" v-model="message" placeholder="Comment / description" class="form-control">
+                <!-- <input type="text" name="message" @keydown="typing" v-model="message" placeholder="Comment / description" class="form-control"> -->
+                <textarea class="text-box form-control v-scroll" v-model="message" @keydown="typing" placeholder="Comment / description"></textarea>
                 <span class="input-group-append">
                     <button type="button" @click="sendMessage" class="btn btn-success">Add Comment</button>
                 </span>

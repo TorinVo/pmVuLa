@@ -33,7 +33,7 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $today = Carbon::Now()->subMinutes(3);
-        $message = $request->message;
+        $message = nl2br($request->message);
         $postId = $request->ticket;
         $userId = auth('api')->user()->id;
 
@@ -57,6 +57,7 @@ class CommentController extends Controller
                 $message = str_replace(trim($value), '##vuelink'.$temp[1], $message);
             }
         }
+
         $comment = Comment::where(['post_id'=> $postId])->latest()->first();
         if(!empty($comment) && $comment->user_id == $userId && Carbon::parse($comment->created_at) >= $today){
             $oldBody =  $comment->comments;
