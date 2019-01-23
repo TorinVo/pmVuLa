@@ -12,7 +12,7 @@
             <!-- /.direct-chat-img -->
             <div class="direct-chat-text">
                <template v-for="(node, n) in nodes">
-                    <link-item v-if="n % 2" :to="node" :key="n"></link-item>
+                    <LinkItem v-if="n % 2" :to="node" :key="n"></LinkItem>
                     <span v-html="node" v-else :key="n"></span>
                 </template>
             </div>
@@ -35,7 +35,7 @@
             <!-- /.direct-chat-img -->
             <div class="direct-chat-text">
                 <template v-for="(node, n) in nodes">
-                    <link-item v-if="n % 2" :to="node" :key="n"></link-item>
+                    <LinkItem v-if="n % 2" :to="node" :key="n"></LinkItem>
                     <span v-html="node" v-else :key="n"></span>
                 </template>
             </div>
@@ -49,25 +49,12 @@
 </template>
 
 <script>
-import router from '../router';
-    Vue.component('link-item', {
-        props:['to'],
-        template:`<router-link v-if="typeLink.length == 1" :to="'/ticket/'+to">##{{to}}</router-link><a v-else href="javascript:void(0)" @click="showImage($event)">##i{{typeLink[1]}}</a>`,
-        methods:{
-            showImage(){
-                if (event) event.preventDefault()
-                let img = '/img/attach/'+this.typeLink[1]+'.'+this.typeLink[2];
-                Fire.$emit('showImage', img);
-            }
-        },
-        computed: {
-            typeLink() {
-                return this.to.split('i');
-            }
-        }
-    })
-        
+    import router from '../router';
+    import LinkItem from './LinkItem.vue'
     export default {
+        components: {
+            LinkItem
+        },
         props: {
             message: {
                 user: {},
@@ -75,7 +62,11 @@ import router from '../router';
             }
         },
         methods: {
-            
+            nl2br(str, replaceMode, isXhtml){
+                var breakTag = (isXhtml) ? '<br />' : '<br>';
+                var replaceStr = (replaceMode) ? '$1'+ breakTag : '$1'+ breakTag +'$2';
+                return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, replaceStr);
+            },
         },
         computed: {
             getName() {
@@ -86,7 +77,8 @@ import router from '../router';
                 return photo;
             },
             nodes() {
-                return this.message.comments.split(/##vuelink([\w]+)/)
+                var comments = this.nl2br(this.message.comments);
+                return comments.split(/##vuelink([\w]+)/)
             },
             userRead(){
                 let me = this.message.user_id;

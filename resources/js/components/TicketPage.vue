@@ -22,6 +22,22 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
+                    <div class="col">
+                        <div class="card card-success card-outline direct-chat direct-chat-success">
+                            <div class="card-header d-flex p-0">
+                                <h3 class="card-title p-2 mb-0">Description</h3>
+                                <div class="card-tools"><button type="button" data-widget="collapse" class="btn btn-tool"><i class="fa fa-minus"></i></button></div>
+                            </div>
+                             <div class="card-body v-scroll" style="padding: 10px;max-height: 100px;">
+                                <template v-for="(node, n) in description">
+                                    <LinkItem v-if="n % 2" :to="node" :key="n"></LinkItem>
+                                    <span v-html="node" v-else :key="n"></span>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-8">
                         <!-- DIRECT CHAT WARNING -->
                         <chat-box @actionsTicket="actionsTicket" :post-id="ticket.id" :ticket="ticket"></chat-box>
@@ -40,21 +56,25 @@
 </template>
 
 <script>
+    import { nl2br } from '../helpers';
     import ChatAttach from './Attach.vue';
     import ImageCarousel from './ImageCarousel.vue';
     import ModalWindow from './ModalWindow.vue';
+    import LinkItem from './LinkItem.vue'
     export default {
         components: {
             ChatAttach,
             ImageCarousel,
-            ModalWindow
+            ModalWindow,
+            LinkItem
         },
 
         data() {
             return {
                 ticket: {
                     user: {},
-                    project: {}
+                    project: {},
+                    description: ''
                 },
                 imageView: ''
             }
@@ -101,6 +121,13 @@
                     vm.$refs.imagemodal.modalOpen = true;
                 });
             });
+        },
+
+        computed: {
+            description() {
+                var description = nl2br(this.ticket.description);
+                return (description)?description.split(/##vuelink([\w]+)/):''
+            },
         },
 
         mounted() {

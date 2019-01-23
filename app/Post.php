@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class Post extends Model
 {
     protected $fillable = [
-        'title', 'project_id', 'user_id', 'status', 'reviewed', 'priority'
+        'title', 'project_id', 'user_id', 'status', 'reviewed', 'priority', 'description'
     ];
 
     public function user()

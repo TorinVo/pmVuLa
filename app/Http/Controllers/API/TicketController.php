@@ -51,9 +51,11 @@ class TicketController extends Controller
         $this->validate($request,[
             'title' => 'required|string|max:191',
             'project_id' => 'required|numeric|exists:projects,id',
+            'description' => 'required'
         ]);
         $user_id = auth('api')->user()->id;
         $request->merge(['user_id' => $user_id]);
+        $request->merge(['description' => convertLink($request->description)]);
         broadcast(new MessageNotification(['type'=> 'ticketOpen', 'message'=> 'open']));
         return Post::create($request->all());
     }
@@ -96,9 +98,11 @@ class TicketController extends Controller
         $this->validate($request, [
             'title' => 'required|string|max:191',
             'project_id' => 'required|numeric|exists:projects,id',
+            'description' => 'required'
         ]);
-        $ticket->update($request->all());
         
+        $request->merge(['description' => convertLink($request->description)]);
+        $ticket->update($request->all());
         return ['message' => 'Updated the ticket info'];
     }
 

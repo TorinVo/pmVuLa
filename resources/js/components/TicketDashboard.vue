@@ -225,6 +225,12 @@
                                 </select>
                                 <has-error :form="frmData" field="project_id"></has-error>
                             </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea v-model="frmData.description" type="description" name="description" id="description" class="form-control form-control-sm"
+                                :class="{ 'is-invalid': frmData.errors.has('description') }"></textarea>
+                                <has-error :form="frmData" field="description"></has-error>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
@@ -262,7 +268,8 @@
                     id: '',
                     title: '',
                     project_id: '',
-                    priority: 'low'
+                    priority: 'low',
+                    description: ''
                 })
             }
         },
@@ -345,6 +352,20 @@
                 $('#ticketModal').modal({
                     backdrop: 'static'
                 });
+                var description = ticket.description;
+                var link = description.split(/##vuelink([\w]+)/);
+                if(link.length > 0){
+                    description = '';
+                    link.forEach(function(element, index) {
+                        if(index % 2){
+                            var temp = element.split('i');
+                            description += (temp.length == 1)?('##' + element) : ('##i' + temp[1]);
+                        }else{
+                            description += element;
+                        }
+                    });
+                }
+                ticket.description = description;
                 this.frmData.fill(ticket);
             },
 
